@@ -1,0 +1,9 @@
+{
+
+  "require": {
+
+    "twig/extensions": "~1.0"
+
+  }
+
+}
