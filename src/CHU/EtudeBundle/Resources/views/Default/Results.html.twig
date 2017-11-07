@@ -1,0 +1,34 @@
+{# src/CHU/EtudeBundle/Resources/views/Default/Results.html.twig #}
+
+{% extends "CHUEtudeBundle::layoutBundle.html.twig" %}
+
+{% block title %}
+Resultats
+{% endblock %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" type="text/css" href="{{asset('public/css/enregistrement.css')}}">
+{% endblock %}
+
+
+{% block body_bundle %}
+
+  <div id="submit">
+      <form  action= "{{ path('chu_etude_show_questionnaire') }}" method="post">
+          <p>
+              <label for="newQuestion"> Étude : </label>
+  						<select name="idetude" size="1">
+  							{% for Etude in EtudeList %}
+  								<option value="{{Etude.id}}">{{Etude.name}}</option>
+  							{% endfor %}
+  						</select>
+              <select name="mode" size="1">
+                <option value="questionnaire">Voir le qustionnaire</option>
+                <option value="reponses">Voir les réponses.</option>
+							</select>
+          </p>
+				<input type="submit" value="Voir"/>
+      </form>
+  </div>
+  <pre><a href="{{path('chu__homepage')}}">Retour à l'accueil</a></pre>
+{% endblock %}

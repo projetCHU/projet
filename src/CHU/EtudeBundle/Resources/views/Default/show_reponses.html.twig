@@ -1,0 +1,25 @@
+{# src/CHU/EtudeBundle/Resources/views/Default/Etude_Aswers_Display.html.twig #}
+
+{% extends "CHUEtudeBundle::layoutBundle.html.twig" %}
+
+{% block title %}
+Questionnaire
+{% endblock %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" type="text/css" href="{{asset('public/css/enregistrement.css')}}">
+{% endblock %}
+
+
+{% block body_bundle  %}
+<pre>
+{% for Answer in reponses %}
+    <form method='post' action="{{ path('chu_etude_delete_answer')}}" >
+			<input id="idreponse" name="idreponse" value="{{Answer.id}}" hidden="true" />
+			Réponses n°{{ loop.index }}: {{ Answer.contenu }}
+			<input type="submit" value="effacer" />
+		</form>
+{% endfor %}
+</pre>
+  <a href="{{ path('chu_etude_show_etudes')}}" class="btn btn-default"> Retour à la liste des études.</a>
+{% endblock %}

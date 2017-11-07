@@ -1,0 +1,23 @@
+{# src/CHU/EtudeBundle/Resources/views/Default/Etude_Aswers_Display.html.twig #}
+
+{% extends "CHUEtudeBundle::layoutBundle.html.twig" %}
+
+{% block title %}
+Questionnaire
+{% endblock %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" type="text/css" href="{{asset('public/css/enregistrement.css')}}">
+{% endblock %}
+
+
+{% block chu_questionnaire_body %}
+<pre><h1>ÉTUDE {{etude.name}}</h1><br/><br/><br/><br/><i>Commentaire:({{etude.commentary}})</i>
+</pre>
+<pre>
+{% for Answer in ListAnswers %}idRépondant : {{ Answer.user }}.
+    Question n°{{ Answer.question.id }}: {{ Answer.contenu }}.
+{% endfor %}
+</pre>
+  <a href="{{ path('chu_etude_questionnaire_resultats')}}" class="btn btn-default"> Retour à la liste des études.</a>
+{% endblock %}

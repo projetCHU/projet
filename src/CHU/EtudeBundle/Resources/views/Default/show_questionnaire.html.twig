@@ -1,0 +1,20 @@
+{# src/CHU/EtudeBundle/Resources/views/Default/show_questionnaire.html.twig #}
+
+{% extends "CHUEtudeBundle::layoutBundle.html.twig" %}
+
+{% block stylesheets %}
+	<!--<link rel="stylesheet" type="text/css" href="{{asset('public/css/enregistrement.css')}}">-->
+{% endblock %}
+
+{% block title %}
+{#titre de l'etude #}
+{{ etude.name }}
+{% endblock %}
+
+
+{% block body_bundle %}
+    <h1>Aperçu de l'étude <i>{{ etude.name }}</i></h1><br/><br/>
+    {{ etude.content | raw }}
+  </form>
+  <a href="{{ path('chu_etude_show_etudes')}}" class="btn btn-default"> Retour à la liste des études.</a>
+{% endblock %}
