@@ -3,6 +3,12 @@
 namespace CHU\EtudeBundle\Entity;
 
 
+/**
+
+N'EST PAS UTILISÉ POUR LE MOMENT.
+
+*/
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -18,11 +24,8 @@ class Question
     public function __construct($question_name = null){
       $this->setContenu($question_name);
     }
-    /**
-     * @ORM\ManyToOne(targetEntity="CHU\EtudeBundle\Entity\Question_Type")
-     */
-     //laisser en public afin de pouvoir y accéder aisément depuis le controller.
-    public $question_type;
+
+
 
 
     /**

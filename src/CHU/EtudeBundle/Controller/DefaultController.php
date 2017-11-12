@@ -8,7 +8,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 //include des entités nécessaires.
 use CHU\EtudeBundle\Entity\Question;
-use CHU\EtudeBundle\Entity\Question_Type;
 use CHU\EtudeBundle\Entity\Etude;
 use CHU\EtudeBundle\Entity\Answer;
 
