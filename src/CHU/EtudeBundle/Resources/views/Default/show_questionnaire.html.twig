@@ -7,14 +7,13 @@
 {% endblock %}
 
 {% block title %}
-{#titre de l'etude #}
-{{ etude.name }}
+{#titre du questionnaire #}
+{{ etude_name }}
 {% endblock %}
 
 
 {% block body_bundle %}
-    <h1>Aperçu de l'étude <i>{{ etude.name }}</i></h1><br/><br/>
-    {{ etude.content | raw }}
-  </form>
+    <h1>Aperçu du questionnaire :</h1><br/><br/>
+    {{ etude_form | raw }}
   <a href="{{ path('chu_etude_show_etudes')}}" class="btn btn-default"> Retour à la liste des études.</a>
 {% endblock %}

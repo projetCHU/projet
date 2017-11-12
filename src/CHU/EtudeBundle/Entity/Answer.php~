@@ -12,10 +12,14 @@ INSTRUCTIONS et AIDES.
   Cette entité gère les réponses à un formulaire.
   Elle contient :
     -Un ID : son identifiant.
-    -Un contenu : les réponses au formulaire stockées dans une chaîne JSON comme suit :
-        {{q_index: 'numéro de question', r_content : 'reponse(s) à la question' }{etc....}}
-    -une etude : Il s'agit de lentité Etude à laquelle est reliée l'entité Answer.
-        en relation ManyToOne (Answer -> Etude).
+
+    -Une etude : Il s'agit de lentité Etude à laquelle est reliée l'entité Answer.
+        en relation ManyToOne (Answer -> Etude).-Un champ question : il rappelle l'intitulé de la question.
+      REMARQUE: Les espaces sont remplacé par des underscore '_'.
+
+    -Un champ reponses : contient la réponse au questions du questionnaire.
+        Les reponses sont une chaine JSON comme suit :
+          exemple : { "nom_quest1": "reponse1", "nom_quest2": "reponse2", "nom_quest3":["reponse3.1","reponse3.2"], etc...}
 */
 
 /**
@@ -41,11 +45,18 @@ class Answer
     private $id;
 
     /**
-     * @var string
+     * @var integer
      *
-     * @ORM\Column(name="contenu", type="string", length=255)
+     * @ORM\Column(name="user", type="integer", nullable=false)
      */
-    private $contenu;
+    private $participant;
+
+    /**
+     * @var text
+     *
+     * @ORM\Column(name="reponses", type="text")
+     */
+    private $reponses;
 
     /**
      * Get id
@@ -57,30 +68,6 @@ class Answer
         return $this->id;
     }
 
-
-    /**
-     * Set contenu
-     *
-     * @param string $contenu
-     *
-     * @return Answer
-     */
-    public function setContenu($contenu)
-    {
-        $this->contenu = $contenu;
-
-        return $this;
-    }
-
-    /**
-     * Get contenu
-     *
-     * @return string
-     */
-    public function getContenu()
-    {
-        return $this->contenu;
-    }
 
     /**
      * Set etude
@@ -104,5 +91,53 @@ class Answer
     public function getetude()
     {
         return $this->etude;
+    }
+
+    /**
+     * Set reponses
+     *
+     * @param string $reponses
+     *
+     * @return Answer
+     */
+    public function setReponses($reponses)
+    {
+        $this->reponses = $reponses;
+
+        return $this;
+    }
+
+    /**
+     * Get reponses
+     *
+     * @return string
+     */
+    public function getReponses()
+    {
+        return $this->reponses;
+    }
+
+    /**
+     * Set participant
+     *
+     * @param integer $participant
+     *
+     * @return Answer
+     */
+    public function setParticipant($participant)
+    {
+        $this->participant = $participant;
+
+        return $this;
+    }
+
+    /**
+     * Get participant
+     *
+     * @return integer
+     */
+    public function getParticipant()
+    {
+        return $this->participant;
     }
 }

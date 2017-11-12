@@ -8,16 +8,13 @@
 
 {% block title %}
 {#titre de l'etude #}
-{{ etude.name }}
+{{ etude_name }}
 {% endblock %}
 
 
 {% block body_bundle %}
-    <h1>Répondre à l'étude <i>{{ etude.name }}</i></h1><br/><br/>
-    {{ etude.content | raw }}
-    {#on rajoute un champ pour se souvenir de l'id de l'étude. PAS DU TOUT SECURISÉ#}
-    <input type="text" id="idetude" name="idetude"  value="{{ etude.id }}" hidden="true" />
-    <input type="submit">
-  </form>
-  <a href="{{ path('chu_etude_show_etudes')}}" class="btn btn-default"> Retour à la liste des études.</a>
+    <h1>Commençons :</h1><br/><br/>
+    {{ etude_form | raw }}
+
+<a href="{{path('chu__homepage')}}">Retour à l'accueil.</a>
 {% endblock %}

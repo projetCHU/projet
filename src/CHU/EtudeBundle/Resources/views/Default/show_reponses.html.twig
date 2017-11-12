@@ -8,18 +8,13 @@ Questionnaire
 
 {% block stylesheets %}
 	<link rel="stylesheet" type="text/css" href="{{asset('public/css/enregistrement.css')}}">
+	<link rel="stylesheet" type="text/css" href="{{asset('public/css/etude_bundle.css')}}">
 {% endblock %}
 
 
 {% block body_bundle  %}
 <pre>
-{% for Answer in reponses %}
-    <form method='post' action="{{ path('chu_etude_delete_answer')}}" >
-			<input id="idreponse" name="idreponse" value="{{Answer.id}}" hidden="true" />
-			Réponses n°{{ loop.index }}: {{ Answer.contenu }}
-			<input type="submit" value="effacer" />
-		</form>
-{% endfor %}
+	{{ tab_reponse | raw 	 }}
 </pre>
   <a href="{{ path('chu_etude_show_etudes')}}" class="btn btn-default"> Retour à la liste des études.</a>
 {% endblock %}
