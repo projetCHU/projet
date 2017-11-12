@@ -14,39 +14,35 @@ use CHU\EtudeBundle\Entity\Answer;
 
 
 
-/***
-CES INSTRUCTIONS NE SONT PAS À JOUR !!!!!!!!!!
-!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+/****
+LOUIS MARCHAND
+date : 11 12 17
 
 
-PETITES INSTRUCTIONS POUR LA GENERATION DE QUESTIONNAIRE. V.1
+PETITES INSTRUCTIONS POUR LA GENERATION DE QUESTIONNAIRE. V.2
 
-Le formBuilder génère en fait un formulaire ( ha bon ? :)),
-  c'est à dire le code html de la balise <form> et son contenu.
+#1 Le formbuilder, (disponible ici : /build_form ) génère des formulaires sous format html.
+    Le questionnaire sous format HTML est récupérer et parser pour en faire une chaine JSON.
+    Cette chaine JSON est stockée dans l'entite Etude.
 
-Pour s'en servir correctement, il faut que le formulaire généré par le formbuilder
-  soit configuré correctement, c'est-à-dire:
-    <form .... method='post'  action='{{ path('chu_etude_questionnaire_repondu')}}'>
+#2 Quand on affiche un questionnaire pour y répondre ou pour le voir simplement,
+    on va récupérer la chaine JSON du questionnaire dans l'entité Etude, et on parse
+    la chaine JSON pour reconstruire le questionnaire sous format HTML.
 
-    NE PAS GÉNÉRER la balise de fermeture du formulaire.
+#3 Quand on répond à un questionnaire, on récupère les réponses dans que l'on parse
+    et convertit en chaine JSON. Cette chaine JSON est stocké dans l'entité Answer.
 
-Le formulaire généré est ainsi stocké dans le champ 'content' de l'entité 'Etude'.
+#4 Quand on affiche les réponses à un questionnaire, on va chercher toutes les réponses à
+    celui-ci. On convertit toutes les chaines JSON des réponses et on les insert dans un
+    tableau HTML qui est construit automatiquement à partir du tableau des chaines JSON des
+    réponses.
+    (voir : ARRAY_JSON_REPONSES_To_HTML_TAB($JSON_array,bool $option_titre) )
 
-4 actions différentes concernant le questionnaire déjà créés. Toutes sont gérées dans la methode 'action_questionnaireAction()'.
-  1->Afficher le formulaire:
-        -On recupère le formulaire et on pense à rajouter la balise de fermeture du formulaire à sa fin.
-  2->Répondre au formulaire:
-        -On récupère le formulaire,
-         on ajoute un input pour indiquer l'id de l'étude,
-         on ajoute le bouton submit,
-         et enfin on ajoute la balise de fermeture du formulaire.
-  3->Supprimer le formulaire:
-        -On supprime l'entité. Uniquement si aucune réponse n'est liée.
-  4->Voir les réponses au questionnaire:
-        -On récupère le formulaire et son id.
-         On récupère toutes les entités réponses correspondant à ce formulaire.
-         On affiche l'ensemble des réponses.
-*/
+#REMARQUES:
+  Toutes fonctions de 'parsing' et de conversion de format sont à la fin du fichier dans
+    la section :  FONCTIONS PRIVÉES
+
+**/
 
 
 
