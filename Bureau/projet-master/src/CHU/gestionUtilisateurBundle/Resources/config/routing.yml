@@ -1,0 +1,27 @@
+chu_gestion_utilisateur_page_login:
+    path:     /Login
+    defaults: { _controller: CHUgestionUtilisateurBundle:gestionUtilisateur:pageLogin }
+
+chu_gestion_utilisateur_login:
+    path:     /gestionLogin
+    defaults: { _controller: CHUgestionUtilisateurBundle:gestionUtilisateur:login }
+
+chu_gestion_utilisateur_accueil:
+    path:     /
+    defaults: { _controller: CHUgestionUtilisateurBundle:gestionUtilisateur:index }
+
+chu_gestion_utilisateur_page_creation:
+    path:     /Enregistrement
+    defaults: { _controller: CHUgestionUtilisateurBundle:gestionUtilisateur:pageCreationUtilisateur }
+
+chu_gestion_utilisateur_creation:
+    path:     /gestionEnregistrement
+    defaults: { _controller: CHUgestionUtilisateurBundle:gestionUtilisateur:creationUtilisateur }
+
+chu_gestion_utilisateur_deconnection:
+    path:     /Deconnection
+    defaults: { _controller: CHUgestionUtilisateurBundle:gestionUtilisateur:deconnection }
+
+chu_gestion_utilisateur_page_recuperation_mdp:
+    path:     /Recuperation
+    defaults: { _controller: CHUgestionUtilisateurBundle:gestionUtilisateur:recuperation }

@@ -1,0 +1,26 @@
+{# src/CHU/EtudeBundle/Resources/views/Default/form_questionnaire.html.twig #}
+
+<div id="signup-form">
+    <form  action= "{{ path('chu_etude_questionnaire_reponse') }}" method="post">
+        <p>
+            <label for="Age">Age</label>
+            <input id="Age" type="text" name="Age" value="" required/>
+        </p>
+        <p>
+            <label for="Taille">Taille</label>
+            <input id="Taille" type="text" name="Taille" value="" required/>
+        </p>
+        <p>
+            <label for="Metier">Metier</label>
+            <input id="Metier" type="text" name="Metier"  required/>
+        </p>
+        <p>
+            <label for="Fou">Êtes vous débile ?</label>
+            <input id="Fou" type="text" name="Fou"  required/>
+        </p>
+        <p>
+          <button id="submit" type="submit">Soumettre</button>
+        </p>
+
+    </form>
+</div>

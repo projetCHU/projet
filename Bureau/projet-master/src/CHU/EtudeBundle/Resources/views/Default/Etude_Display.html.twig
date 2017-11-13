@@ -1,0 +1,23 @@
+{# src/CHU/EtudeBundle/Resources/views/Default/Etude_Display.html.twig #}
+
+{% extends "CHUEtudeBundle::layoutBundle.html.twig" %}
+
+{% block title %}
+Questionnaire
+{% endblock %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" type="text/css" href="{{asset('public/css/enregistrement.css')}}">
+{% endblock %}
+
+
+{% block chu_questionnaire_body %}
+<pre>
+{% for Question in questionList %}Question {{ loop.index }}:
+      		{# pas très performant à grande echelle de faire appel à un champ qui est un objet car cela génère une requete à chaque tour de boucle#}
+      type question : {{Question.question_type.id}}{#Question.question_type.label#}
+      contenu :{{ Question.contenu }}
+{% endfor %}
+</pre>
+  <a href="{{ path('chu_etude_questionnaire_resultats')}}" class="btn btn-default"> Retour à la liste des études.</a>
+{% endblock %}
