@@ -192,9 +192,18 @@ class DefaultController extends Controller
         case 'supprimer':
           //si on veut supprimer
           //alors on ouvre le questionnaire afin de pouvoir y repondre
+
+              //on vérifie que cette étude n'aie pas déjà servi
+              $query = $em->createQuery("select a from CHUEtudeBundle:Answer a join a.etude e where e.id = :id");
+              $query->setParameter('id', $idetude);
+              $reponses = $query->getResult();
+              if(sizeof($reponses)!=0){
+                return new Response('L\'étude est en cours d\'utilisation. Suppression impossible. </br> <a href="\Etude">Retour</a>');
+              }
+
               $em->remove($letude);
               $em->flush();
-              return new Response("L'etude a bien été supprimée.");
+              return new Response("L'etude a bien été supprimée. </br> <a href=\"\Etude\">Retour</a>");
             # code...
             break;
         case 'voir':
