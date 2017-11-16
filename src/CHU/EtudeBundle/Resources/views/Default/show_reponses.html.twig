@@ -14,7 +14,9 @@ Questionnaire
 
 {% block body_bundle  %}
 <pre>
-	{{ tab_reponse | raw 	 }}
+	<table>
+	{{ tab | raw 	 }}
+	</table>
 </pre>
   <a href="{{ path('chu_etude_show_etudes')}}" class="btn btn-default"> Retour à la liste des études.</a>
 {% endblock %}

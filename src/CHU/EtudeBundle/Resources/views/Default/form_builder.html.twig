@@ -1,139 +1,163 @@
-{# src/CHU/EtudeBundle/Resources/views/Default/form_builder.html.twig #}
-
-<div id="mainHolder" class="container">
-    <div class="row">
-        <!-- Source -->
-        <div id="componentHolder" class="col-lg-6 col-sm-12">
-          <h2>Vos composants</h2>
-          <hr></hr>
-          <div id="componentsTabPane">
-            <ul class="nav nav-tabs" id="formtabs">
-              <!-- Tab nav -->
-              <li class="active"><a href="#inputs" data-toggle="tab">Champs de texte</a></li>
-              <li><a href="#radioscheckboxes" data-toggle="tab">QCM</a></li>
-              <li><a href="#select" data-toggle="tab">Listes de choix</a></li>
-            </ul>
-            <form class="form-horizontal" id="components">
-              <fieldset>
-                <div class="tab-content">
+    <div id="mainHolder" class="container">
+        <div class="row">
+            <!-- Source -->
+            <div id="componentHolder" class="col-lg-6 col-sm-12">
+              <h2>Vos questions</h2>
+              <hr></hr>
+              <div id="componentsTabPane">
+                <ul class="nav nav-tabs" id="formtabs">
+                  <!-- Tab nav -->
+                  <li class="active"><a href="#inputs" data-toggle="tab">Saisis</a></li>
+                  <li><a href="#radioscheckboxes" data-toggle="tab">Choix</a></li>
+                  <li><a href="#select" data-toggle="tab">Listes</a></li>
+                </ul>
+                <form class="form-horizontal" id="components">
+                  <fieldset>
+                    <div class="tab-content">
 
 
-                  <!-- Input pane -->
-                  <div id="inputs" class="sourceHolder connectedSortable tab-pane active">
-                  <!-- Input alternatives here -->
-
-                      <div class="form-group">
-                          <!-- Champs de texte : Nom -->
-                          <label class="col-sm-4 control-label" for="textInput">Nom : </label>
-                          <div class="col-sm-7" type="text">
-                            <input id="textInput" name="Nom : " type="text" placeholder="Entrez votre nom" class="form-control">
-                          </div>
-                      </div>
-
-                      <div class="form-group">
-                        <!-- Champ de texte : Prénom -->
-                        <label class="col-sm-4 control-label" for="textInput">Prénom : </label>
-                        <div class="col-sm-7" type="text">
-                          <input id="textInput" name="Prénom : " type="text" placeholder="Entrez votre prénom" class="form-control">
-                        </div>
-                      </div>
-
-                      <div class="form-group">
-                        <!-- Champ de texte : Commentaire -->
-                        <label class="col-sm-4 control-label" for="textarea">Avez-vous un commentaire ? </label>
-                        <div class="col-sm-7" type="textarea">
-                          <div class="input-group">
-                            <textarea id="textarea" name="Avez-vous un commentaire ? " class="form-control"></textarea>
-                          </div>
-                        </div>
-                      </div>
-
-                  </div>
-
-                  <!-- Radio pane -->
-                  <div id="radioscheckboxes" class="sourceHolder connectedSortable tab-pane">
-                  <!-- radio and checkbox alternatives here -->
-
-                      <div class="form-group">
-                        <!-- Multiple radios -->
-                        <label class="col-sm-4 control-label" for="textInput">Sexe : </label>
-                        <div class="col-sm-7" type="radio">
-                          <label class="radio" for="sexe">
-                            <input type="radio" name="Sexe : " id="radios-0" value="Homme">Homme
-                          </label>
-                          <label class="radio" for="radios">
-                            <input type="radio" name="Sexe : " id="radios-1" value="Femme">Femme
-                          </label>
-                        </div>
-                      </div>
-
-                      <div class="form-group">
-                        <!-- Multiple checkboxes -->
-                        <label class="col-sm-4 control-label" for="textInput">Où souffrez-vous ?</label>
-                        <div class="col-sm-7" type="checkbox">
-                          <label class="checkbox" for="loc-douleur">
-                            <input type="checkbox" name="Où souffrez-vous ?[]" id="checkboxes-0" value="Tête">Tête
-                          </label>
-                          <label class="checkbox" for="loc-douleur">
-                            <input type="checkbox" name="Où souffrez-vous ?[]" id="checkboxes-1" value="Dos">Dos
-                          </label>
-                          <label class="checkbox" for="loc-douleur">
-                            <input type="checkbox" name="Où souffrez-vous ?[]" id="checkboxes-2" value="Pieds">Pieds
-                          </label>
-                        </div>
-                      </div>
-
-                  </div>
-
-                  <!-- Select pane -->
-                  <div id="select" class="sourceHolder connectedSortable tab-pane">
-                  <!-- Select alternatives here -->
-
-                      <div class="form-group">
-                        <!-- Select single -->
-                        <label class="col-sm-4 control-label" for="selectSingle">Corps de métier : </label>
-                        <div class="col-sm-7" type="option">
-                          <select id="selectSingle" name="Corps de métier : " class="form-control">
-                            <option value="BTP">BTP</option>
-                            <option value="Militaire">Militaire</option>
-                            <option value="Restauration">Restauration</option>
-                            <option value="Enseignement">Enseignement</option>
-                          </select>
-                        </div>
-                      </div>
-
-                  </div>
-
-
-                </div>
-              </fieldset>
-            </form>
+    <!--------------------------------------------------------------------->
+    <div id="inputs" class="sourceHolder connectedSortable tab-pane active">
+        <div class="form-group">
+          <!--SAISIE MONOLIGNE-->
+          <label class="col-sm-4 control-label" for="textInput">Ligne de texte</label>
+          <div class="col-sm-7" type="text">
+            <input id="textInput" name="textInput" type="text"  class="form-control">
           </div>
         </div>
-
-          <!-- Target -->
-          <div id="formVisualizer" class="col-lg-6 col-sm-12">
-            <h2>Votre questionnaire</h2>
-            <hr></hr>
-            <form class="form-horizontal area">
-              <div id="target" class="connectedSortable">
-
-              </div>
-            </form>
+        <!---->
+        <div class="form-group">
+          <!-- SAISIE MULTILIGNE -->
+          <label class="col-sm-4 control-label" for="textarea">Zone de texte</label>
+          <div class="col-sm-7" type="textarea">
+            <div class="input-group">
+              <textarea id="textarea" name="textarea" class="form-control"></textarea>
+            </div>
           </div>
-      </div>
-      <div class="row">
-        <div class="col-lg-12 col-sm-12">
-          <!-- ATTENTION LE CHEMIN EST ECRIT EN DUR-->
-          <form method="post" action= "{{path('chu_etude_submit_builded_form')}}">
-            <!-- le titre de l'étude est obligatoire-->
-          <p>Titre de l'étude :</p><input type="text" name="form_title" required/><br>
-          <hr></hr>
-          <textarea id="formSource" style="display:none;" name="form_builded"></textarea>
-          <button type="submit" class="btn btn-success">Valider</button>
-          </form>
         </div>
-      </div>
+        <!---->
+    </div>
+
+    <!--------------------------------------------------------------------->
+    <div id="radioscheckboxes" class="sourceHolder connectedSortable tab-pane">
+        <div class="form-group">
+          <!-- CHOIX UNIQUE -->
+          <label class="col-sm-4 control-label" for="textInput">Choix unique</label>
+          <div class="col-sm-7" type="radio">
+            <label class="radio" for="radios">
+              <input type="radio" name="radios" id="radios-0" value="Option one" checked="checked">
+              Choix 1
+            </label>
+            <label class="radio" for="radios">
+              <input type="radio" name="radios" id="radios-1" value="Option two">
+              Choix 2
+            </label>
+          </div>
+        </div>
+        <!---->
+        <div class="form-group">
+          <!-- CHOIX MULTIPLES -->
+          <label class="col-sm-4 control-label" for="textInput">Choix multiples</label>
+          <div class="col-sm-7" type="checkbox">
+            <label class="checkbox" for="checkboxes">
+              <input type="checkbox" name="checkboxes" id="checkboxes-0" value="Option one" checked="checked">
+              Choix 1
+            </label>
+            <label class="checkbox" for="checkboxes">
+              <input type="checkbox" name="checkboxes" id="checkboxes-1" value="Option two">
+              Choix 2
+            </label>
+          </div>
+        </div>
+        <!---->
+    </div>
+
+      <!--------------------------------------------------------------------->
+      <div id="select" class="sourceHolder connectedSortable tab-pane">
+        <div class="form-group">
+          <!-- LISTE CHOIX UNIQUE -->
+          <label class="col-sm-4 control-label" for="selectSingle">Liste choix unique</label>
+          <div class="col-sm-7" type="option">
+            <select id="selectSingle" name="selectSingle" class="form-control">
+              <option value="opt1">Choix 1</option>
+              <option value="opt2">Choix 2</option>
+            </select>
+          </div>
+        </div>
+        <!---->
+        <div class="form-group">
+          <!-- LISTE CHOIX MULTIPLES -->
+          <label class="col-sm-4 control-label" for="selectMultiple">Liste choix multiple</label>
+          <div class="col-sm-7" type="option-multiple">
+            <select id="selectMultiple" name="selectMultiple" class="form-control" multiple>
+              <option value="opt1">Choix 1</option>
+              <option value="opt2">Choix 2</option>
+            </select>
+          </div>
+        </div>
+      <!---->
+    </div>
+    
   </div>
 
-  <div id="contextMenu" class="dropdown clearfix"></div>
+
+  <!--------------------------------------------------------------------->
+
+
+                  </fieldset>
+                </form>
+              </div>
+            </div>
+
+            <!-- Target -->
+            <div id="formVisualizer" class="col-lg-6 col-sm-12">
+              <h2>Votre Questionnaire</h2>
+              <hr></hr>
+              <form class="form-horizontal area">
+                <div id="target" class="connectedSortable">
+
+                </div>
+              </form>
+            </div>
+        </div>
+        <div class="row">
+          <div class="col-lg-12 col-sm-12">
+            <hr></hr>
+            <form method="post" action= "{{path('chu_etude_submit_builded_form')}}">
+              <!-- le titre de l'étude est obligatoire-->
+              <p>Titre du questionnaire <i>(Obligatoire)</i> :</p><input type="text" name="form_title" required/><br>
+              <hr></hr>
+              <textarea id="formSource" style="display:none;" name="form_builded"></textarea>
+              <button type="submit" class="btn btn-success">Créer</button>
+            </form>
+          </div>
+        </div>
+    </div>
+
+    <!-- MENU CONTEXTUEL-->
+    <div id="contextMenu" class="dropdown clearfix">
+      <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
+        <li><a id="edit" tabindex="-1" href="javascript:void(0)">Réglages<span class="pull-right glyphicon glyphicon-pencil"></span></a></li>
+        <li><a id="clearForm" tabindex="-1" href="javascript:void(0)">Effacer tout<span class="pull-right glyphicon glyphicon-trash"></span></a></li>
+      </ul>
+    </div>
+
+    <!-- Confirm modal -->
+    <a href="#confirm-modal" class="modal-toggle hidden" data-toggle="modal"><i class="icon-trash"></i> Show Alert Modal</a>
+    <div id="confirm-modal" class="modal">
+      <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header text-center">
+                <a href="#" data-dismiss="modal" aria-hidden="true" class="close">×</a>
+                <h3 class="center-block">Effacer</h3>
+            </div>
+            <div class="modal-body text-center">
+                 <p>Remettre à zéro le questionnaire ?</p>
+            </div>
+            <div class="modal-footer text-center">
+              <a id="cancelButton" href="#" data-dismiss="modal" aria-hidden="true" class="btn-lg btn btn-default">Annuler</a>
+              <a id="confirmButton" href="#" data-dismiss="modal" aria-hidden="true" class="btn-lg btn btn-danger">Oui</a>
+            </div>
+          </div>
+        </div>
+    </div>

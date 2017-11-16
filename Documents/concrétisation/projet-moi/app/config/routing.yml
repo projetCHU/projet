@@ -1,7 +1,0 @@
-chu_etude:
-    resource: "@CHUEtudeBundle/Resources/config/routing.yml"
-    prefix:   /Etude
-
-chu_ugestion_utilisateur:
-    resource: "@CHUgestionUtilisateurBundle/Resources/config/routing.yml"
-    prefix:   /

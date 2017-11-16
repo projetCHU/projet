@@ -1,3 +1,7 @@
+/**
+  LA FEUILLE DE STYLE POUR LE BUNDLE ETUDE.
+**/
+
 .etude_content {
   margin: auto;
 position: absolute;
@@ -5,13 +9,14 @@ top: 50px; left: 0; bottom: 0; right: 0;
 }
 
 
+
+/** LES STYLES POUR UN TABLEAU HTML **/
 tr.row{
   align-content: center;
   align-items: center;
   align-self: center;
   text-align: center;
 }
-
 td.column{
   align-content: center;
   align-items: center;
@@ -20,8 +25,7 @@ td.column{
   border:solid gray 2px;
   background-color: white;
 }
-
-th.column{
+th.column_header{
   align-content: center;
   align-items: center;
   align-self: center;

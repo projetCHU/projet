@@ -18,30 +18,73 @@ LOUIS MARCHAND
 date : 11 12 17
 
 
-PETITES INSTRUCTIONS POUR LA GENERATION DE QUESTIONNAIRE. V.2
+PETITES INSTRUCTIONS POUR L'UTILISATION DU BUNDLE 'ETUDEBUNDLE'. V.2
 
 #1 Le formbuilder, (disponible ici : /build_form ) génère des formulaires sous format html.
     Le questionnaire sous format HTML est récupérer et parser pour en faire une chaine JSON.
-    Cette chaine JSON est stockée dans l'entite Etude.
+  Rmq:-voir "HTML_Form_To_JSON()"
+      -un exemple de chaine JSON est dispnible dans le commentaire de la fonction
+      -Cette chaine JSON est stockée dans l'entite Etude.
 
-#2 Quand on affiche un questionnaire pour y répondre ou pour le voir simplement,
-    on va récupérer la chaine JSON du questionnaire dans l'entité Etude, et on parse
-    la chaine JSON pour reconstruire le questionnaire sous format HTML.
+      -Le fonctionnement du FormBuilder est décrit plus bas
+
+#2 Quand on affiche un questionnaire pour y répondre, on va récupérer la chaine
+    JSON du questionnaire dans l'entité Etude, et on parse la chaine JSON pour
+    reconstruire le questionnaire sous format HTML.
+  Rmq:-voir "JSON_To_HTML_Form()"
+
 
 #3 Quand on répond à un questionnaire, on récupère les réponses dans que l'on parse
-    et convertit en chaine JSON. Cette chaine JSON est stocké dans l'entité Answer.
+    et convertit en chaine JSON.
+  Rmq:-voir "ARRAY_Rep_To_JSON()"
+      -Cette chaine JSON est stocké dans l'entité Answer.
 
 #4 Quand on affiche les réponses à un questionnaire, on va chercher toutes les réponses à
     celui-ci. On convertit toutes les chaines JSON des réponses et on les insert dans un
     tableau HTML qui est construit automatiquement à partir du tableau des chaines JSON des
     réponses.
-    (voir : ARRAY_JSON_REPONSES_To_HTML_TAB($JSON_array,bool $option_titre) )
+  Rmq:-voir "ARRAY_JSON_REPONSES_To_HTML_TAB()"
 
-#REMARQUES:
-  Toutes fonctions de 'parsing' et de conversion de format sont à la fin du fichier dans
-    la section :  FONCTIONS PRIVÉES
 
+
+###FONCTIONNEMENT DU FORMBUILDER###
+  -Le formbuilder affiche un ensemble de modèle de champ de saisi (select,textarea,textinput,bouton radio,list).
+  -Une zone de création est mise à disposition pour y glisser les éléments que l'on souhaite ajouter au questionnaire.
+  -Chaque élément se déplace en drag'n drop vers la zone de création. Les éléments peuvent être réordonné à tout
+    moment de la même façon.
+  -Chaque type de question, une fois déposé dans la zone de créaion, est réglable en faisant un clique droit sur celui-ci.
+  -On peut ainsi personnaliser l'intitulé de la question, et les différentes réponses possibles lorsqu'il s'agit d'Une
+    question de type 'checkbox' ou 'boutonradio' ou encore 'select avec option'.
+  -Lorsque le questionnaire est terminé, on renseigne le nom du questionnaire dans le champ prévu en bas de page.
+  -On confirme en appuyant sur 'créer'.
+
+  La function qui gère la réception du formulaire généré est : "submit_builded_formAction()"
 **/
+
+/**
+
+A faire:
+    -Resoudre le problème du clique droit qui bug.
+    -Resoudre le probleme du js concernant l'affichage des questions lorsqu'on retire les lignes inutiles (placeholder etc..)
+      et que l'on sauvegarde le reglages de cette question.
+    -Écrire une function js qui attribue la même valeur aux attributs name et value dans les champs type checkbox et radio etc..
+      Pour pouvoir ensuite n'afficher qu'un champ de saisi pour le reglages des réponses possibles.
+    -Ajouter la possibilté de choisir les réponses possibles à une question parmis des valeurs prédéfinis dans un fichier ou dans la bases de données.
+    -Ajouter une methode qui charge en base de données ces fameuse réponses à partir d'un fichier text,excel ou autre.
+    -Ameliorer la page d'affichage des réponses.
+    -Ajouter une methode d'export des données réponses sous format csv,xml ou autre.
+    -Embellir les pages du Bundle.
+
+
+    -Relier le bundle avec celui de la gestion de compte.
+      -Ajouter la possibilité de supprimer des réponses.
+        (lier les réponses à un user)
+      -Rendre disponible la création de questionnaire uniquement par les profils authorisés.
+      -Rendre disponible la participation à un questionnaire uniquement pour les profils authorisés.
+      -
+    -Ajouter la gestion des comptes/session du bundle gestion utilisateur
+
+*/
 
 
 
@@ -112,7 +155,7 @@ class DefaultController extends Controller
       $new_Etude = new Etude(); //nouvelle Etude
       $new_Etude->setName($request->request->get('form_title')); //on renseigne son nom
       $new_Etude->setContent($JSONQuest); //on renseigne son contenu
-
+      //on persiste l'étude
       $em->persist($new_Etude);
       $em->flush();
 
@@ -139,7 +182,7 @@ class DefaultController extends Controller
     }
 
     /**
-      AAFFICHER LE QUESTIONNAIRE EN MODE DÉSACTIVÉ
+      GÉRER LES ACTIONS DISPONIBLES POUR UNE ÉTUDE
     **/
     public function action_questionnaireAction(Request $request){
       /**
@@ -159,8 +202,9 @@ class DefaultController extends Controller
       $idetude = $request->request->get('idetude');
       $letude = $em->getRepository(self::ENTITY_ETUDE)->find($idetude);
 
-      $lesreponses=null;
+      //ON REGARDE LA VALEUR DE LA VARIABLE 'mode', et on opère en fonction.
       switch($request->request->get('mode')){
+        //ON VEUT AFFICHER LES RÉPONSES DE L'ÉTUDE
         case 'reponses':
             //si on veut voir les réponses
               //on récupère les Réponses à cette étude.
@@ -171,15 +215,21 @@ class DefaultController extends Controller
                 $tab_reponses_JSON[]=$rep->getReponses();
               }
               //si il n'y a pas de réponses on le dit.
-              if(sizeof($tab_reponses_JSON)==0)
+              if(!isset($tab_reponses_JSON) || sizeof($tab_reponses_JSON)==0)
                 return new Response("Il n'y a pas de réponses à ce questionnaire pour le moment.");
 
               //on récupère la liste des réponses et on convertir en un beau tableau HTML prêt à l'emploi
-              $tab_reponses_HTML = $this->ARRAY_JSON_REPONSES_To_HTML_TAB($tab_reponses_JSON,true);
+              $tab_reponses_HTML = $this->ARRAY_JSON_REPONSES_To_HTML_TAB($tab_reponses_JSON,$idetude);
+
+              //on vérifie que tout se passe bien
+              if( !isset($tab_reponses_HTML) || $tab_reponses_HTML==null)
+                return new Response('un probleme est survenu.');
+
               //on affiche la page avec le tableau de réponse
-              return $this->render(self::VUE_SHOW_REPONSES,array('tab_reponse'=>$tab_reponses_HTML));
+              return $this->render(self::VUE_SHOW_REPONSES,array('tab'=>$tab_reponses_HTML));
             # code...
             break;
+        //ON VEUT RÉPONDRE À L'ÉTUDE
         case 'repondre':
             //si on veut y répondre
               //on récupère le format html du questionnaire, et activé
@@ -189,6 +239,7 @@ class DefaultController extends Controller
                 array('etude_name'=>$letude->getName(),'etude_form'=>$HTMLQuest));
             # code...
             break;
+        //ON VEUT SUPPRIMER L'ÉTUDE
         case 'supprimer':
           //si on veut supprimer
           //alors on ouvre le questionnaire afin de pouvoir y repondre
@@ -206,15 +257,7 @@ class DefaultController extends Controller
               return new Response("L'etude a bien été supprimée. </br> <a href=\"\Etude\">Retour</a>");
             # code...
             break;
-        case 'voir':
-              //on récupère le format html du questionnaire, et désactivé
-              $htmlQuest = $this->JSON_To_HTML_Form($letude->getContent(),false);
-              //si on veut afficher le questionnaire simplement
-              //on envoit le questionnaire dans la vue de questionnaire
-              return $this->render(self::VUE_SHOW_QUESTIONNAIRE,
-                array('etude_name'=>$letude->getName(),'etude_form'=>$htmlQuest));
-          # code...
-          break;
+        //CAS D'ÉCHEC
         default:
             return new Response('Vous ne devriez pas être là');
             break;
@@ -263,7 +306,7 @@ class DefaultController extends Controller
       //POUR LE MOMENT CE SERA TOUJOURS LE MÊME, CAR IL N'Y A PAS DE LIEN AVEC LA GESTION UTILISATEUR.
       $answer->setParticipant(666);
 
-      /**
+      /***
       ON VÉRIFIE QUE LE PARTICIPANT N'AIE PAS DÉJÀ RÉPONDU.
       */
       /*
@@ -321,6 +364,13 @@ class DefaultController extends Controller
       FONCTIONS PRIVÉES.
 **/
 
+
+/***
+    AUTRES METHODES.
+**/
+
+
+
 /**
       METHODES POUR LA TRANSCRIPTION DE RÉPONSES
         ARRAY_REPONSE -> JSON_REPONSE
@@ -343,10 +393,10 @@ class DefaultController extends Controller
 
       $JSONrep = "{";//début chaine JSON
 
-      foreach($array_rep as $q_name=>$q_rep){
+      foreach($array_rep as $q_name=>$q_rep){//pour chaque réponse
           //intitulé question
-          $JSONrep.=' "'.$q_name.'" : ';
-          if(is_array($q_rep) && sizeof($q_rep)!=0){
+          $JSONrep.=' "'.$q_name.'" : ';  //le nom de la question
+          if(is_array($q_rep) && sizeof($q_rep)!=0){  //les réponses si il y en a plusieurs
             $JSONrep.='[';
             foreach($q_rep as $rep){
               $JSONrep.=' "'.$rep.'",';
@@ -355,41 +405,46 @@ class DefaultController extends Controller
             $JSONrep.=']';
           }
           else{//qu'une seule réponse
-            $JSONrep.='"'.$q_rep.'"';
+            $JSONrep.='"'.$q_rep.'"'; //la réponse si il n'y en a qu'une
           }
           //fin de la réponse
-          $JSONrep.=',';
+          $JSONrep.=','; //n ajoute une virgule pour séparer chque réponses.
       }//fin foreach
       //on enlève la dernière virgule
-      $JSONrep=substr($JSONrep,0,-1);//on retire la dernière virgule
+      $JSONrep=substr($JSONrep,0,-1);//on retire la dernière virgule, quand c'est la dernière réponse
       //fin de la chaine JSON de la reponse
       $JSONrep.='}';
 
-      return $JSONrep;
+      return $JSONrep;/// on renvoie la chaine JSON de la reponses
     }
 
     /**
-      TRANSFORME UN TABLEAU DE PLUSIEURS RÉPONSES À UNE MÊME ÉTUDE EN UN TABLEAU HTML.
+      TRANSFORME LA CHAINE JSON EN UN TABLEAU HTML.
       REMARQUE:
-        Chaque entrée dans le tableau $JSON_array représente les réponses d'une personne au questionnaire
+        -Le tableau html resultant ne contient pas les balises <table>
+        -JSON_array doit être un tableau de réponses,sous forme de chaines JSON, répondant à la même étude.
     */
-    private function ARRAY_JSON_REPONSES_To_HTML_TAB($JSON_array,bool $option_titre){
-      if(!isset($JSON_array)){
-        print 'on passe ici';
+    private function ARRAY_JSON_REPONSES_To_HTML_TAB($JSON_array,$idetude){
+      if(!isset($JSON_array))
         return null;
-      }
+      if(! isset($idetude) || $idetude==0)
+        return null;
 
-      //début du tableau HTML
-      $HTML_tab='<table>';
-
+      $HTML_tab="";
       //En tete des colonnes du tableau html
-      if($option_titre){//si l'option est activée
-        $HTML_tab.='<tr class="row">';
-        foreach(json_decode($JSON_array[0],true) as $q_title => $q_rep){
-          $HTML_tab.='<th class="column">'.$q_title.'</th>';
+      $em = $this->getDoctrine()->getManager();
+      $etude = $em->getRepository(self::ENTITY_ETUDE)->findOneById($idetude);
+      if(!isset($etude))
+        return null;
+      $JSONQUEST = $etude->getContent();
+      //on récupère le questionnaire JSON et on le trandforme en un tableau.
+      $questionnaire = json_decode($JSONQUEST,true);
+      $HTML_tab.='<tr class="row">';
+        foreach($questionnaire['questionnaire'] as $question){
+          $HTML_tab.='<th class="column_header">'.$question['label'].'</th>';
         }
-        $HTML_tab.='</tr>';
-      }
+      $HTML_tab.='</tr>';
+
 
       //pour chaque Réponses
       foreach($JSON_array as $JSON_rep){
@@ -417,14 +472,23 @@ class DefaultController extends Controller
         //on ferme la ligne du tableau
         $HTML_tab.='</tr>';//fin de ligne
       }//foreach fin, (pour chaque ligne)
-      //fin du tableau HTML
-      $HTML_tab.='</table>';
 
       return $HTML_tab;//on renvoie le tableau HTML, sous forme de chaine standard
     }
 
     /**
      TRANSFORME UN QUESTIONNAIRE SOUS FORMAT HTML EN JSON
+    */
+    /***
+    Exemple de chaine JSON pour stocker un questionnaire.
+    {
+  "titre": "EvalRisk n°1",
+  "questionnaire": [{"label": "Nom :","type": "text"},
+                    {"label": "Sexe :","type": "radio","reponses": ["Homme","Femme"]},
+                    {"label": "Corps de métier :","type": "option","reponses":["BTP","Militaire","Restauration","Enseignement"]},
+                    {etc....}
+                  ]
+    }
     */
     private function HTML_Form_To_JSON($Array_param)
     {
@@ -452,11 +516,13 @@ class DefaultController extends Controller
       //début des questions
       $JSONQuest.='"questionnaire" : [';
       //on créer une chaîne JSON qui va contenir l'ensemble des questions du questionnaire.
+      $num_Quest=1;//numéro de question. Sert à identifier la question dans le questionnaire.
       foreach($questions as $ques){
         print($ques);
         //debut de la question
         $JSONQuest.='{';
-
+        //on ajoute le numéro de question
+        $JSONQuest.='"num" : "'.$num_Quest.'",';
         //on récupère l'intitulé de la question
         $JSONQuest.='"label" : "'.trim($ques->label).'",';
         //on récupère le type de réponse
@@ -493,7 +559,8 @@ class DefaultController extends Controller
             $JSONQuest = substr($JSONQuest, 0, -1);//on retire la dernière virgule
             $JSONQuest.=']';//on ferme les reponses
             break;
-          case 'option':
+          case 'option'://même traitement que 'option-multiple'
+          case 'option-multiple':
             # code...
             $JSONQuest.=', "reponses" : [';
             //on récupère toutes les réponses possibles.
@@ -506,6 +573,8 @@ class DefaultController extends Controller
         }
         //on ferme la question
         $JSONQuest.='},';
+        //on incrémente le numéro de question
+        $num_Quest++;
       }//fin de traitement des questions.
       $JSONQuest = substr($JSONQuest, 0, -1);//on retire la dernière virgule
       //fin du qustionnaire
@@ -550,6 +619,8 @@ class DefaultController extends Controller
           //option de la question
           $optionQuestion="";
 
+          //numéro de question
+          $numero = $questionJSON['num'];
           //l'intitulé de la question
           $intitule = $questionJSON['label'];
           //le type de la question
@@ -570,7 +641,7 @@ class DefaultController extends Controller
                 #PAS SUR QUE METTRE LE TYPE DE REPONSE DANS LA BALISE SOIT UTILE
                 $optionQuestion.='<div class="col-sm-7" reponseType="text">';
                 #A MODIFIER POUR METTRE LE BON TAG POUR LE NOM DE LA BALISE
-                $optionQuestion.='<input id="textInput" name="'.$intitule.'" class="form-control" type="text" />';
+                $optionQuestion.='<input id="textInput" name="'.$numero.'" class="form-control" type="text" />';
                 $optionQuestion.='</div>';
               break;
             case 'textarea':
@@ -584,7 +655,7 @@ class DefaultController extends Controller
               #PAS SUR QUE METTRE LE TYPE DE REPONSE DANS LA BALISE SOIT UTILE
               $optionQuestion.='<div class="col-sm-7" reponseType="textarea">';
               #A MODIFIER POUR METTRE LE BON TAG POUR LE NOM DE LA BALISE
-              $optionQuestion.='<input id="textareaInput" name="'.$intitule.'" class="form-control" type="textarea" />';
+              $optionQuestion.='<input id="textareaInput" name="'.$numero.'" class="form-control" type="textarea" />';
               $optionQuestion.='</div>';
               break;
             case 'radio':
@@ -604,35 +675,11 @@ class DefaultController extends Controller
               foreach($reponses as $reponse)
                 {
                   $optionQuestion.='<label class="radio" for="sexe">';
-                  $optionQuestion.='<input name="'.$intitule.'" id="radios-'.$ind.'" value="'.$reponse.'" type="radio" />'.$reponse;
+                  $optionQuestion.='<input name="'.$numero.'" id="radios-'.$ind.'" value="'.$reponse.'" type="radio" />'.$reponse;
                   $optionQuestion.='</label>';
                   $ind++;
                 }
                 //on ferme les options
-              $optionQuestion.='</div>';
-              break;
-            case 'option':
-              # code...
-              //on récupère les réponses
-              $reponses = $questionJSON['reponses'];
-              //entete
-              $enteteQuestion.='<!-- Select Single -->';
-              //titre
-              $titreQuestion.='<label class="col-sm-4 control-label" for="selectSingle">';
-              $titreQuestion.=$intitule.'</label>';
-              //options
-              $optionQuestion.='<div class="col-sm-7" >';
-
-              #POUR CHAQUE_QUESTION
-              #PERSONALISER LE NAME EN FONCTION DE LA QUESTION QUAN IL Y AURA PLUSIEURS QUESTIONS DE CE TYPE
-              $optionQuestion.='<select id="selectSingle" name="'.$intitule.'" class="form-control">';
-              foreach($reponses as $reponse)
-                {
-                  $optionQuestion.='<option value="'.$reponse.'">'.$reponse.'</option>';
-                }
-              $optionQuestion.='</select>';
-
-              //on ferme les options
               $optionQuestion.='</div>';
               break;
             case 'checkbox':
@@ -653,10 +700,58 @@ class DefaultController extends Controller
               foreach($reponses as $reponse)
                 {
                   $optionQuestion.='<label class="checkbox" for="loc-douleur">';
-                  $optionQuestion.='<input name="'.$intitule.'[]" id="checkboxes-'.$ind.'" value="'.$reponse.'" type="checkbox" />'.$reponse;
+                  $optionQuestion.='<input name="'.$numero.'[]" id="checkboxes-'.$ind.'" value="'.$reponse.'" type="checkbox" />'.$reponse;
                   $optionQuestion.='</label>';
                   $ind++;
                 }
+              //on ferme les options
+              $optionQuestion.='</div>';
+              break;
+            case 'option':
+              # code...
+              //on récupère les réponses
+              $reponses = $questionJSON['reponses'];
+              //entete
+              $enteteQuestion.='<!-- Select Single -->';
+              //titre
+              $titreQuestion.='<label class="col-sm-4 control-label" for="selectSingle">';
+              $titreQuestion.=$intitule.'</label>';
+              //options
+              $optionQuestion.='<div class="col-sm-7" >';
+
+              #POUR CHAQUE_QUESTION
+              #PERSONALISER LE NAME EN FONCTION DE LA QUESTION QUAN IL Y AURA PLUSIEURS QUESTIONS DE CE TYPE
+              $optionQuestion.='<select id="selectSingle" name="'.$numero.'" class="form-control">';
+              foreach($reponses as $reponse)
+                {
+                  $optionQuestion.='<option value="'.$reponse.'">'.$reponse.'</option>';
+                }
+              $optionQuestion.='</select>';
+
+              //on ferme les options
+              $optionQuestion.='</div>';
+              break;
+            case 'option-multiple':
+              # code...
+              //on récupère les réponses
+              $reponses = $questionJSON['reponses'];
+              //entete
+              $enteteQuestion.='<!-- Select Single -->';
+              //titre
+              $titreQuestion.='<label class="col-sm-4 control-label" for="selectMultiple">';
+              $titreQuestion.=$intitule.'</label>';
+              //options
+              $optionQuestion.='<div class="col-sm-7" >';
+
+              #POUR CHAQUE_QUESTION
+              #PERSONALISER LE NAME EN FONCTION DE LA QUESTION QUAN IL Y AURA PLUSIEURS QUESTIONS DE CE TYPE
+              $optionQuestion.='<select id="selectMultiple"  name="'.$numero.'[]" class="form-control" multiple>';
+              foreach($reponses as $reponse)
+                {
+                  $optionQuestion.='<option value="'.$reponse.'">'.$reponse.'</option>';
+                }
+              $optionQuestion.='</select>';
+
               //on ferme les options
               $optionQuestion.='</div>';
               break;

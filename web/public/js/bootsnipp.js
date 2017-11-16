@@ -638,6 +638,7 @@ var FormBuilder = function ($) {
       initTextArea();
     }
 
+    /*INTIALISATION DE LA ZONE DE CRÉATION DU FORMULAIRE ('VOTRE QUESTIONNAIRE')*/
     var initTextArea = function() {
       $('#formSource').on('change', function() {
         $(this).css('height', 'auto' );
@@ -855,59 +856,32 @@ var FormBuilder = function ($) {
           var t = target.hasClass('form-group') ? target : target.parents('div.form-group');
           currentTarget = t;
           var cs = t.getComments(true);
-          var c = cs.length === 0 ? undefined : cs[0].trim().toLowerCase();
+          var c = cs.length === 0 ? undefined : cs[0].trim().toUpperCase();
           switch(c)
           {
-            /* Inputs ========================= */
-            case 'text input':
+            /* Saisis ========================= */
+            case 'SAISIE MONOLIGNE':
               InputHandler.textInput(t);
               break;
-            case 'password input':
-              InputHandler.passwordInput(t);
-            break;
-            case 'prepend text':
-              InputHandler.prependOrAppendTextInput(t, 'Prepend');
-            break;
-            case 'append text':
-              InputHandler.prependOrAppendTextInput(t, 'Append');
-            break;
-            case 'prepend checkbox':
-              InputHandler.prependOrAppendCheckbox(t, 'Prepend');
-            break;
-            case 'append checkbox':
-              InputHandler.prependOrAppendCheckbox(t, 'Append');
-            break;
-            case 'button dropdown':
-              InputHandler.buttonDropdown(t);
-            break;
-            case 'textarea':
+            case 'SAISIE MULTILIGNE':
               InputHandler.textArea(t);
             break;
-            /* Radio and checkboxes =============== */
-            case 'inline radios':
-            case 'multiple radios':
-            case 'inline checkbox':
-            case 'multiple checkboxes':
+            /* Choix =============== */
+            case 'CHOIX UNIQUE':
+            case 'CHOIX MULTIPLES':
               RadioAndCheckboxHandler.init(t);
             break;
-            /* Select ========================= */
-            case 'select single':
-            case 'select multiple':
+            /* Listes ========================= */
+            case 'LISTE CHOIX UNIQUE':
+            case 'LISTE CHOIX MULTIPLES':
               SelectHandler.init(t);
             break;
-            /* Buttons ======================== */
+            /* Boutons ======================== */
+            /* On en laisse un juste pour l'exemple
             case 'file button':
               ButtonHandler.fileButton(t);
             break;
-            case 'single button':
-              ButtonHandler.singleButton(t);
-            break;
-            case 'double button':
-              ButtonHandler.doubleButton(t);
-            break;
-            case 'button group':
-              ButtonHandler.buttonGroup(t);
-            break;
+            */
             default:
               // Special cases
               if(target.is('legend')) {
@@ -1086,19 +1060,23 @@ var FormBuilder = function ($) {
       };
     }(jQuery);
 
+    /**
+      REGLAGES CLIQUE DROIT SUR ELEMENT 'SELECT'. LES SELECT  AVEC OPTIONS
+    **/
     var SelectHandler = function() {
-
       var initGeneral = function(target) {
         TemplateHandler.getEditForm(target.find('label').html()).insertAfter(target);
-        $('#editForm').append(TemplateHandler.getInput('idInput', 'ID / Name', target.find('select').prop('id')));
-        $('#editForm').append(TemplateHandler.getInput('labelInput', 'Label Text', target.find('label').html()));
-        $('#editForm').append(TemplateHandler.getInput('helpblockInput', 'Help Text', target.find('p.help-block').html()));
+        //$('#editForm').append(TemplateHandler.getInput('idInput', 'ID / Name', target.find('select').prop('id')));
+        $('#editForm').append(TemplateHandler.getInput('labelInput', 'Intitulé', target.find('label').html()));
+        //$('#editForm').append(TemplateHandler.getInput('helpblockInput', 'Help Text', target.find('p.help-block').html()));
+
+        //si on commente les deux options suivantes on a un probleme d'affichage  de la question dans la zone de création quand on sauvegarde les réglages.
         $('#editForm').append(TemplateHandler.createSelectboxSingle('labelSizeSelect', 'Label Size', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], TemplateHandler.getSize(target, 'label')));
         $('#editForm').append(TemplateHandler.createSelectboxSingle('inputSizeSelect', 'Input Size', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], TemplateHandler.getSize(target, 'select')));
 
         // Option and values
         $('#editForm').append(TemplateHandler.createTextArea('optionsArea', 'Options', []));
-        $('#editForm').append(TemplateHandler.createTextArea('valuesArea', 'Values', []));
+        $('#editForm').append(TemplateHandler.createTextArea('valuesArea', 'Valeurs', []));
         var options = target.find('select option');
         var vOpt = '', vVal = '', length = options.length;
         $.each(options, function(i, val) {
@@ -1146,21 +1124,26 @@ var FormBuilder = function ($) {
       };
     }(jQuery);
 
-    var RadioAndCheckboxHandler = function() {
 
+    /**
+      REGLAGES CLIQUE DROIT SUR ELEMENT 'RADIO ET CHECKBOX'.
+    **/
+    var RadioAndCheckboxHandler = function() {
       var initGeneral = function(target) {
         var inputSelector = target.find('input[type="radio"]').length !== 0 ? 'input[type="radio"]' : 'input[type="checkbox"]';
 
         TemplateHandler.getEditForm(target.find('label').html()).insertAfter(target);
-        $('#editForm').append(TemplateHandler.getInput('groupInput', 'Group Name', target.find(inputSelector).prop('name')));
-        $('#editForm').append(TemplateHandler.getInput('labelInput', 'Label Text', target.find('label').html()));
-        $('#editForm').append(TemplateHandler.getInput('helpblockInput', 'Help Text', target.find('p.help-block').html()));
+        //$('#editForm').append(TemplateHandler.getInput('groupInput', 'Group Name', target.find(inputSelector).prop('name')));
+        $('#editForm').append(TemplateHandler.getInput('labelInput', 'Intitulé', target.find('label').html()));
+        //$('#editForm').append(TemplateHandler.getInput('helpblockInput', 'Help Text', target.find('p.help-block').html()));
+
+        //si on commente les deux options suivantes on a un probleme d'affichage  de la question dans la zone de création quand on sauvegarde les réglages.
         $('#editForm').append(TemplateHandler.createSelectboxSingle('labelSizeSelect', 'Label Size', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], TemplateHandler.getSize(target, 'label')));
         $('#editForm').append(TemplateHandler.createSelectboxSingle('inputSizeSelect', 'Input Size', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], TemplateHandler.getSize(target, 'input')));
 
         // Option and values
-        $('#editForm').append(TemplateHandler.createTextArea('optionsArea', inputSelector === 'input[type="radio"]' ? 'Radios' : 'Checkboxes', []));
-        $('#editForm').append(TemplateHandler.createTextArea('valuesArea', inputSelector === 'input[type="radio"]' ? 'Radios Values' : 'Checkboxes Values', []));
+        $('#editForm').append(TemplateHandler.createTextArea('optionsArea', inputSelector === 'input[type="radio"]' ? 'input name' : 'input name', []));
+        $('#editForm').append(TemplateHandler.createTextArea('valuesArea', inputSelector === 'input[type="radio"]' ? 'input value' : 'input value', []));
         var radioCheckboxGroup = target.find('input').parents('label').toArray().reverse()
         var vOpt = '', vVal = '', length = radioCheckboxGroup.length;
         $.each(radioCheckboxGroup, function(i, val) {
@@ -1225,8 +1208,10 @@ var FormBuilder = function ($) {
       };
     }(jQuery);
 
+    /**
+      REGLAGES CLIQUE DROIT SUR ELEMENT 'RADIO ET CHECKBOX'.
+    **/
     var InputHandler = function() {
-
       var initGeneralInputForm = function(target) {
           TemplateHandler.getEditForm(target.find('label').html()).insertAfter(target);
           var inputSelector = 'input[type="text"], input[type="password"]', typeOfInput = 'input';
@@ -1235,10 +1220,12 @@ var FormBuilder = function ($) {
             typeOfInput = 'textarea';
           }
 
-          $('#editForm').append(TemplateHandler.getInput('idInput', 'ID / Name', target.find(inputSelector).attr('id')));
-          $('#editForm').append(TemplateHandler.getInput('labelInput', 'Label Text', target.find('label').html()));
-          $('#editForm').append(TemplateHandler.getInput('placeholderInput', 'Placeholder', inputSelector === 'textarea' ? target.find(inputSelector).val() : target.find(inputSelector).attr('placeholder')));
-          $('#editForm').append(TemplateHandler.getInput('helpblockInput', 'Help Text', target.find('p.help-block').html()));
+          //$('#editForm').append(TemplateHandler.getInput('idInput', 'ID / Name', target.find(inputSelector).attr('id')));
+          $('#editForm').append(TemplateHandler.getInput('labelInput', 'Intitulé', target.find('label').html()));
+          //$('#editForm').append(TemplateHandler.getInput('placeholderInput', 'Placeholder', inputSelector === 'textarea' ? target.find(inputSelector).val() : target.find(inputSelector).attr('placeholder')));
+          //$('#editForm').append(TemplateHandler.getInput('helpblockInput', 'Help Text', target.find('p.help-block').html()));
+
+          //si on commente les deux options suivantes on a un probleme d'affichage  de la question dans la zone de création quand on sauvegarde les réglages.
           $('#editForm').append(TemplateHandler.createSelectboxSingle('labelSizeSelect', 'Label Size', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], TemplateHandler.getSize(target, 'label')));
           $('#editForm').append(TemplateHandler.createSelectboxSingle('inputSizeSelect', 'Input Size', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], TemplateHandler.getSize(target, typeOfInput)));
       };
@@ -1373,7 +1360,7 @@ var FormBuilder = function ($) {
         },
         getEditForm: function(title) {
           var $form = $('<form id="editForm"></form>');
-          var $title = $('<h3>' + ('Edit - ' + title) + '</h3>');
+          var $title = $('<h3>' + ('Réglages - ' + title) + '</h3>');
           $form.append($title);
 
           return $form;
