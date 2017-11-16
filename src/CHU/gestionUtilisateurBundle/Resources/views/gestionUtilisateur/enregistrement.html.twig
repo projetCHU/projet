@@ -1,0 +1,17 @@
+
+{# src/CHU/gestionUtilisateurBundle/Resources/views/gestionUtilisateur/enregistrement.html.twig #}
+
+{% extends "CHUgestionUtilisateurBundle::layoutBundle.html.twig" %}
+
+{% block title %}
+S'enregistrer
+{% endblock %}
+
+{% block stylesheets %}
+	<link rel="stylesheet" type="text/css" href="{{asset('public/css/enregistrement.css')}}">
+{% endblock %}
+
+
+{% block chu_gestion_utilisateur_body %}
+	{{ include("CHUgestionUtilisateurBundle:gestionUtilisateur:form_enregistrement.html.twig") }}
+{% endblock %}

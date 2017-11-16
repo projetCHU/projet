@@ -1,0 +1,4 @@
+services:
+#    ch_ugestion_utilisateur.example:
+#        class: CHU\gestionUtilisateurBundle\Example
+#        arguments: ["@service_id", "plain_value", "%parameter%"]

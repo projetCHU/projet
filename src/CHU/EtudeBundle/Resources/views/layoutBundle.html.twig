@@ -1,0 +1,16 @@
+{# /src/CHU/EtudeBundle/Resources/views/layoutBundle.html.twig #}
+
+{% extends "::layout.html.twig" %}
+
+{% block stylesheets %}
+  <link rel="stylesheet" type="text/css" href="{{asset('public/css/etude_bundle.css')}}">
+{% endblock %}
+
+{% block title %}{% endblock %}
+
+{% block body %}
+<div class="etude_content">
+  {% block body_bundle %}
+  {% endblock %}
+</div>
+{% endblock %}

@@ -1,0 +1,8 @@
+<div id="submit">
+    <form  action= "{{ path('chu_etude_questionnaire_reponse_question') }}" method="post">
+        <p>
+            <label for="question"> {{ question.contenu }} : <br/></label>
+            <input id="response" type="text" name="response" value="" required/>
+        </p>
+    </form>
+</div>

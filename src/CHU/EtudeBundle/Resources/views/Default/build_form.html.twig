@@ -1,0 +1,19 @@
+{# /src/CHU/EtudeBundle/Resources/views/Default/build_form.html.twig #}
+
+{% extends "CHUEtudeBundle::layoutBundle.html.twig" %}
+
+{% block title %} Création d'une étude {% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  <link rel="stylesheet" type="text/css" href="{{asset('public/css/bootsnipp.css')}}">
+{% endblock %}
+
+{% block body_bundle %}
+  {{ include("CHUEtudeBundle:Default:form_builder.html.twig") }}
+  <pre> <a href="{{ path('chu_etude_show_etudes')}}" > Retour </a></pre>
+{% endblock %}
+
+{% block javascripts %}
+  <script src="{{asset('public/js/bootsnipp.js')}}"></script>
+{% endblock %}
