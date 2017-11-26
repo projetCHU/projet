@@ -13,8 +13,24 @@
 
 
 {% block body_bundle %}
-    <h1>Commençons :</h1><br/><br/>
-    {{ etude_form | raw }}
+    <h1>Vos réponses : </h1><br/><br/>
+
+    {% if activate is defined %}
+        {% if activate == false %}
+          <form class="form-horizontal area">
+          {{ etude_form | raw }}
+          </form>
+        {% else %}
+          <form class="form-horizontal area" method="post" action="{{path('chu_etude_questionnaire_repondu')}}">
+          {{ etude_form | raw }}
+          <input type="submit"/>
+        {% endif %}
+      {% else %}
+        <form class="form-horizontal area" method="post" action="{{path('chu_etude_questionnaire_repondu')}}">
+        {{ etude_form | raw }}
+        <input type="submit"/>
+      {% endif %}
+    </form>
 
 <a href="{{path('chu__homepage')}}">Retour à l'accueil.</a>
 {% endblock %}

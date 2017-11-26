@@ -17,15 +17,15 @@ Resultats
       <form  action= "{{ path('chu_etude_action_questionnaire') }}" method="post">
           <p>
               <label for="newQuestion"> Étude : </label>
-  						<select name="idetude" size="1">
-  							{% for Etude in EtudeList %}
-  								<option value="{{Etude.id}}">{{Etude.name}}</option>
+  						<select name="id_etude" size="1">
+  							{% for etude in liste_etudes %}
+  								<option value="{{etude._id}}">{{etude.titre}}</option>
   							{% endfor %}
   						</select>
               <select name="mode" size="1">
-                <option value="reponses">Voir les réponses.</option>
-                <option value="repondre">Repondre à l'étude.</option>
-								<option value="supprimer">Supprimer l'étude.</option>
+                <option value="reponses">Consulter les réponses</option>
+                <option value="repondre">Repondre à l'étude</option>
+								<option value="supprimer">Supprimer l'étude</option>
               </select>
           </p>
         <input type="submit" value="Voir"/>
