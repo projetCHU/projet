@@ -18,4 +18,6 @@ A Symfony project created on October 4, 2017, 6:16 pm.
     <li>Rendre disponible la création de questionnaire uniquement par les profils authorisés.</li>
     <li>Rendre disponible la participation à un questionnaire uniquement pour les profils autorisés.</li>
     <li>Ajouter la gestion des comptes/session du bundle gestion utilisateur</li>
+    <li>Mieux commenter et documenter le code</li>
+    <li>Vérifier l'unicité des études avant de les persister en BDD</li>
 </ul>
