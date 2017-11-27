@@ -19,9 +19,6 @@ use CHU\EtudeBundle\Entity\Answer;
 
 /*
 authors : LOUIS MARCHAND / JULIEN FONTAINE (fonfonjuju49@gmail.com)
-TODO : Commenter le code
-TODO : Vérifier l'unicité des études avant de les persister en BDD
-
 */
 
 class DefaultController extends Controller
@@ -64,7 +61,6 @@ class DefaultController extends Controller
   const CHAMP_ID_COLLECTION_ETUDES = '_id';
   const CHAMP_TITRE_COLLECTION_ETUDES = 'titre';
   const CHAMP_CREATEUR_COLLECTION_ETUDES = 'createur';
-  const CHAMP_QUESTIONS_COLLECTION_ETUDES = 'questions';
 
   const CHAMP_ID_COLLECTION_REPONSES = '_id';
   const CHAMP_ID_UTILISATEUR_COLLECTION_REPONSES = 'id_utilisateur';
@@ -73,7 +69,11 @@ class DefaultController extends Controller
   const CHAMP_ID_COLLECTION_QUESTIONS = '_id';
   const CHAMP_LABEL_COLLECTION_QUESTIONS = 'label';
   const CHAMP_TYPE_COLLECTION_QUESTIONS = 'type';
+  const CHAMP_ID_ETUDE_COLLECTION_QUESTIONS = 'id_etude';
   const CHAMP_LABEL_REPONSES_COLLECTION_QUESTIONS = 'label_reponses';
+  const KEY_LABEL_REPONSES_COLLECTION_QUESTIONS = 'label';
+  const CHAMP_INDICE_POSITION_COLLECTION_QUESTIONS = 'indice_position';
+  const CHAMP_ID_VALEUR_REFERENCE_COLLECTION_QUESTION = 'id_valeur_reference';
 
 
 
@@ -126,12 +126,12 @@ class DefaultController extends Controller
       $document = array();
       $document[self::CHAMP_TITRE_COLLECTION_ETUDES]=$request->request->get(self::PARAM_VUE_FORM_BUILDER_TITRE);
       $document[self::CHAMP_CREATEUR_COLLECTION_ETUDES]="a14de5d1dsd"; // ID du créateur de l'étude
+      $collection->insert($document);
+      $id_etude = new ObjectId($document[self::CHAMP_ID_COLLECTION_ETUDES]);
 
       $formulaire = $request->request->get(self::PARAM_VUE_FORM_BUILDER_FORMULAIRE);
-      $document[self::CHAMP_QUESTIONS_COLLECTION_ETUDES]=$this->persistQuestionsFromHtml($formulaire,$db);
+      $this->persistQuestionsFromHtml($formulaire,$id_etude,$db); // On stocke les différentes questions du formulaire
 
-      // add a record
-      $collection->insert($document);
 
       // On informe l'utilisateur que l'ajout s'est bien déroulé
       return new Response(" questionnaire enregistré. <a href='\'>retour</a>");
@@ -235,6 +235,10 @@ class DefaultController extends Controller
               $filter_reponses = array( self::CHAMP_ID_ETUDE_COLLECTION_REPONSES => $id_etude );
               $collection->remove($filter_reponses);
 
+              $collection = $db->selectCollection(self::COLLECTION_QUESTIONS);
+              $filter_reponses = array( self::CHAMP_ID_ETUDE_COLLECTION_QUESTIONS => $id_etude );
+              $collection->remove($filter_reponses);
+
               return new Response("L'etude a bien été supprimée. </br> <a href=\"\\etude\">Retour</a>");
             break;
         //CAS D'ÉCHEC
@@ -283,12 +287,10 @@ class DefaultController extends Controller
      CONVERSION DE CHACUNE DES QUESTIONS EN HTML D'UNE ETUDE ET
      PERSISTENCE DE CHACUNE DES QUESTIONS EN BDD
     */
-    private function persistQuestionsFromHtml(String $questionnaire_html, Database $database){
+    private function persistQuestionsFromHtml(String $questionnaire_html, ObjectId $id_etude, Database $database){
 
       // On selectionne la collection "question" de la BDD
       $collection = $database->selectCollection(self::COLLECTION_QUESTIONS);
-
-      $id_questions = array();
 
       //CHARGEMENT DU QUESTIONNAIRE CRÉÉ
       //On récupère le questionnaire créé
@@ -304,9 +306,12 @@ class DefaultController extends Controller
         $questions[] = $child;
       }
 
+      $indice_position = 0; // Permet de préciser l'ordre des questions dans le questionnaire en BDD
       foreach($questions as $ques){
 
         $question = array();
+
+        $question[self::CHAMP_ID_ETUDE_COLLECTION_QUESTIONS] = $id_etude;
 
         //on récupère l'intitulé de la question
         $question[self::CHAMP_LABEL_COLLECTION_QUESTIONS] = trim($ques->label);
@@ -328,14 +333,20 @@ class DefaultController extends Controller
             # code...
             //on récupère toutes les réponses possibles.
             foreach($ques->div->children() as $reponse){
-              $label_reponses[] = trim($reponse->input->attributes()[self::ATTRIBUT_FORMULAIRE_VALUE]);
+              $label_reponse[self::KEY_LABEL_REPONSES_COLLECTION_QUESTIONS] = trim($reponse->input->attributes()[self::ATTRIBUT_FORMULAIRE_VALUE]);
+              $label_reponse['MS'] = 1;
+              $label_reponse['RACHIS'] = 2;
+              $label_reponses[] = $label_reponse;
             }
             break;
           case 'checkbox':
             # code...
             //on récupère toutes les réponses possibles.
             foreach($ques->div->children() as $reponse){
-              $label_reponses[] = trim($reponse->input->attributes()[self::ATTRIBUT_FORMULAIRE_VALUE]);
+              $label_reponse[self::KEY_LABEL_REPONSES_COLLECTION_QUESTIONS] = trim($reponse->input->attributes()[self::ATTRIBUT_FORMULAIRE_VALUE]);
+              $label_reponse['MS'] = 1;
+              $label_reponse['RACHIS'] = 2;
+              $label_reponses[] = $label_reponse;
             }
             break;
           case 'option'://même traitement que 'option-multiple'
@@ -343,18 +354,23 @@ class DefaultController extends Controller
             # code...
             //on récupère toutes les réponses possibles.
             foreach($ques->div->select->children() as $reponse){
-              $label_reponses[] = trim($reponse);
+              $label_reponse[self::KEY_LABEL_REPONSES_COLLECTION_QUESTIONS] = trim($reponse);
+              $label_reponse['MS'] = 1;
+              $label_reponse['RACHIS'] = 2;
+              $label_reponses[] = $label_reponse;
             }
             break;
         }
 
         $question[self::CHAMP_LABEL_REPONSES_COLLECTION_QUESTIONS] = $label_reponses;
+        $question[self::CHAMP_INDICE_POSITION_COLLECTION_QUESTIONS] = $indice_position;
+        $question[self::CHAMP_ID_VALEUR_REFERENCE_COLLECTION_QUESTION] = "NONE";
+        $indice_position++;
         // On ajoute la question dans la BDD
         $collection->insert($question);
         $id_questions[] = $question[self::CHAMP_ID_COLLECTION_QUESTIONS];
       }//fin de traitement des questions.
 
-      return $id_questions;
     }
 
     /**
@@ -366,18 +382,25 @@ class DefaultController extends Controller
         return null;
       //sinon, on continue le traitement
 
+      $id_etude = $etude[self::CHAMP_ID_COLLECTION_ETUDES];
+
       $collection = $database->selectCollection(self::COLLECTION_QUESTIONS);
 
-      foreach($etude[self::CHAMP_QUESTIONS_COLLECTION_ETUDES] as $question){
-        $filter = array(self::CHAMP_ID_COLLECTION_QUESTIONS => $question);
-        $questions[] = $collection->findOne($filter);
-      }
+      $filter = array(self::CHAMP_ID_ETUDE_COLLECTION_QUESTIONS => $id_etude);
+      $cursor = $collection->find($filter);
 
+      $sort_filter = array(self::CHAMP_INDICE_POSITION_COLLECTION_QUESTIONS => 1);
+      $cursor->sort($sort_filter);
+
+      $questions = array();
+      while($cursor->hasNext()){
+        $questions[] = $cursor->getNext();
+      }
       //la variable string qui va contenir le code html du questionnaire construit
       $html="";
       //on récupère le titre du questionnaire
       $html.="<legend>".$titre = $etude[self::CHAMP_TITRE_COLLECTION_ETUDES]."</legend>";
-      $html.='<input type="hidden" name="id_etude" id="id_etude" value="'.$etude[self::CHAMP_ID_COLLECTION_ETUDES].'">';
+      $html.='<input type="hidden" name="id_etude" id="id_etude" value="'.$id_etude.'">';
 
 
       //si il y a des questions
@@ -445,11 +468,11 @@ class DefaultController extends Controller
 
               #POUR CHAQUE_QUESTION
               $ind=0;
-              foreach($reponses as $reponse)
-                {
-                  $optionQuestion.='<label class="radio" for="sexe">';
-                  $optionQuestion.='<input name="'.$numero.'" id="radios-'.$ind.'" value="'.$reponse.'" type="radio" />'.$reponse;
-                  $optionQuestion.='</label>';
+              foreach($question[self::CHAMP_LABEL_REPONSES_COLLECTION_QUESTIONS] as $reponse){
+                  $optionQuestion .= '<label class="radio" for="sexe">';
+                  $optionQuestion .= '<input name="'.$numero.'" id="radios-'.$ind.'" value="'.$reponse[self::KEY_LABEL_REPONSES_COLLECTION_QUESTIONS];
+                  $optionQuestion .= '" type="radio" />'.$reponse[self::KEY_LABEL_REPONSES_COLLECTION_QUESTIONS];
+                  $optionQuestion .= '</label>';
                   $ind++;
                 }
                 //on ferme les options
@@ -470,20 +493,17 @@ class DefaultController extends Controller
               #POUR CHAQUE_QUESTION
               #PERSONALISER LE NAME EN FONCTION DE LA QUESTION QUAND IL Y AURA PLUSIEURS QUESTIONS DE CE TYPE
               $ind=0;
-              foreach($reponses as $reponse)
-                {
-                  $optionQuestion.='<label class="checkbox" for="loc-douleur">';
-                  $optionQuestion.='<input name="'.$numero.'[]" id="checkboxes-'.$ind.'" value="'.$reponse.'" type="checkbox" />'.$reponse;
-                  $optionQuestion.='</label>';
-                  $ind++;
+              foreach($question[self::CHAMP_LABEL_REPONSES_COLLECTION_QUESTIONS] as $reponse){
+                    $optionQuestion .= '<label class="checkbox" for="loc-douleur">';
+                    $optionQuestion .= '<input name="'.$numero.'[]" id="checkboxes-'.$ind.'" value="'.$reponse[self::KEY_LABEL_REPONSES_COLLECTION_QUESTIONS];
+                    $optionQuestion .= '" type="checkbox" />'.$reponse[self::KEY_LABEL_REPONSES_COLLECTION_QUESTIONS];
+                    $optionQuestion .= '</label>';
+                    $ind++;
                 }
               //on ferme les options
               $optionQuestion.='</div>';
               break;
             case 'option':
-              # code...
-              //on récupère les réponses
-              $reponses = $question[self::CHAMP_LABEL_REPONSES_COLLECTION_QUESTIONS];
               //entete
               $enteteQuestion.='<!-- Select Single -->';
               //titre
@@ -495,19 +515,17 @@ class DefaultController extends Controller
               #POUR CHAQUE_QUESTION
               #PERSONALISER LE NAME EN FONCTION DE LA QUESTION QUAN IL Y AURA PLUSIEURS QUESTIONS DE CE TYPE
               $optionQuestion.='<select id="selectSingle" name="'.$numero.'" class="form-control">';
-              foreach($reponses as $reponse)
-                {
-                  $optionQuestion.='<option value="'.$reponse.'">'.$reponse.'</option>';
-                }
+
+              foreach($question[self::CHAMP_LABEL_REPONSES_COLLECTION_QUESTIONS] as $reponse){
+                $optionQuestion .= '<option value="'.$reponse[self::KEY_LABEL_REPONSES_COLLECTION_QUESTIONS].'">';
+                $optionQuestion .= $reponse[self::KEY_LABEL_REPONSES_COLLECTION_QUESTIONS].'</option>';
+              }
               $optionQuestion.='</select>';
 
               //on ferme les options
               $optionQuestion.='</div>';
               break;
             case 'option-multiple':
-              # code...
-              //on récupère les réponses
-              $reponses = $question[self::CHAMP_LABEL_REPONSES_COLLECTION_QUESTIONS];
               //entete
               $enteteQuestion.='<!-- Select Single -->';
               //titre
@@ -519,10 +537,12 @@ class DefaultController extends Controller
               #POUR CHAQUE_QUESTION
               #PERSONALISER LE NAME EN FONCTION DE LA QUESTION QUAN IL Y AURA PLUSIEURS QUESTIONS DE CE TYPE
               $optionQuestion.='<select id="selectMultiple"  name="'.$numero.'[]" class="form-control" multiple>';
-              foreach($reponses as $reponse)
-                {
-                  $optionQuestion.='<option value="'.$reponse.'">'.$reponse.'</option>';
-                }
+
+              //on récupère les réponses
+              foreach($question[self::CHAMP_LABEL_REPONSES_COLLECTION_QUESTIONS] as $reponse){
+                  $optionQuestion .= '<option value="'.$reponse[self::KEY_LABEL_REPONSES_COLLECTION_QUESTIONS].'">';
+                  $optionQuestion .= $reponse[self::KEY_LABEL_REPONSES_COLLECTION_QUESTIONS].'</option>';
+              }
               $optionQuestion.='</select>';
 
               //on ferme les options
