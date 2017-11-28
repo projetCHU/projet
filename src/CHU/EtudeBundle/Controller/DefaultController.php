@@ -204,8 +204,10 @@ class DefaultController extends Controller
               if(sizeof($reponses)==0)
                 return new Response("Il n'y a pas de réponses à ce questionnaire pour le moment.");
 
+              $score = $this->calculScore($reponses, $id_etude, $db);
+
               //on affiche la page avec le tableau de réponse
-              return new Response(json_encode($reponses));
+              return new Response($score);
             break;
         //ON VEUT RÉPONDRE À L'ÉTUDE
         case self::PARAM_VUE_LISTE_ETUDES_MODE_REPONDRE:
@@ -247,10 +249,6 @@ class DefaultController extends Controller
             break;
       }
     }//fin function
-
-    public function repondreEtudeAction(Request $request){
-
-    }
 
     /**
       PERSISTENCE DES RÉPONSES D'UNE ETUDE
@@ -324,13 +322,12 @@ class DefaultController extends Controller
         $label_reponses = array();
         switch($ques->div->attributes()[self::ATTRIBUT_FORMULAIRE_TYPE]){
           case 'text'://on attend un champ texte.
-            # code...   //rien à ajouter.
+            //rien à ajouter.
             break;
           case 'textarea':
-            # code...   //rien à ajouter.
+            //rien à ajouter.
             break;
           case 'radio':
-            # code...
             //on récupère toutes les réponses possibles.
             foreach($ques->div->children() as $reponse){
               $label_reponse[self::KEY_LABEL_REPONSES_COLLECTION_QUESTIONS] = trim($reponse->input->attributes()[self::ATTRIBUT_FORMULAIRE_VALUE]);
@@ -340,7 +337,6 @@ class DefaultController extends Controller
             }
             break;
           case 'checkbox':
-            # code...
             //on récupère toutes les réponses possibles.
             foreach($ques->div->children() as $reponse){
               $label_reponse[self::KEY_LABEL_REPONSES_COLLECTION_QUESTIONS] = trim($reponse->input->attributes()[self::ATTRIBUT_FORMULAIRE_VALUE]);
@@ -351,7 +347,6 @@ class DefaultController extends Controller
             break;
           case 'option'://même traitement que 'option-multiple'
           case 'option-multiple':
-            # code...
             //on récupère toutes les réponses possibles.
             foreach($ques->div->select->children() as $reponse){
               $label_reponse[self::KEY_LABEL_REPONSES_COLLECTION_QUESTIONS] = trim($reponse);
@@ -559,4 +554,36 @@ class DefaultController extends Controller
       //on renvoit la chaine le questionnaire construit sous format html
       return $html;
     }
+
+    private function calculScore(Array $reponses, ObjectId $id_etude, Database $database){
+
+      $collection = $database->selectCollection(self::COLLECTION_QUESTIONS);
+      $filter = array(self::CHAMP_ID_ETUDE_COLLECTION_QUESTIONS => $id_etude);
+      $cursor = $collection->find($filter);
+
+      $questions = array();
+      while($cursor->hasNext()){
+        $questions[] = $cursor->getNext();
+      }
+
+      $score = array( 'MS' => 0 , 'RACHIS' => 0);
+
+      $reponse = $reponses[0]; // POUR FIXER A UN ET UN SEUL USER (cas d'exemple)
+      foreach($reponse as $key => $value){ // pour chaque reponse on récupère l'id de la question et la/les reponses données
+        if( $key != '_id' && $key != 'id_etude' && $key != 'id_utilisateur'){
+          foreach($questions as $question){ // on cherche à quelle question de l'etude l'id récupéré dans la reponse fait référence
+            if($key == $question[self::CHAMP_ID_COLLECTION_QUESTIONS]){
+              foreach($question[self::CHAMP_LABEL_REPONSES_COLLECTION_QUESTIONS] as $label){ // On parcours les différents labels de la question
+                if($label[self::KEY_LABEL_REPONSES_COLLECTION_QUESTIONS] == $value){ // Jusqu'à trouver celui qui match avec la réponse donnée par l'utilisateur
+                  $score['RACHIS'] += $label['RACHIS'];
+                  $score['MS'] += $label['MS'];
+                }
+              }
+            }
+          }
+        }
+      }
+
+      return json_encode($score);
   }
+}
