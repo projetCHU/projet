@@ -149,7 +149,10 @@ class DefaultController extends Controller
       $id_etude = new ObjectId($document[self::CHAMP_ID_COLLECTION_ETUDES]);
 
       $formulaire = $request->request->get(self::PARAM_VUE_FORM_BUILDER_FORMULAIRE);
-      $this->persistQuestionsFromHtml($formulaire,$id_etude,$db); // On stocke les différentes questions du formulaire
+      $label_scores = explode(";",$request->request->get('scores'));
+      array_pop($label_scores);
+
+      $this->persistQuestionsFromHtml($formulaire,$id_etude,$label_scores,$db); // On stocke les différentes questions du formulaire
 
 
       // On informe l'utilisateur que l'ajout s'est bien déroulé
@@ -304,7 +307,7 @@ class DefaultController extends Controller
      CONVERSION DE CHACUNE DES QUESTIONS EN HTML D'UNE ETUDE ET
      PERSISTENCE DE CHACUNE DES QUESTIONS EN BDD
     */
-    private function persistQuestionsFromHtml(String $questionnaire_html, ObjectId $id_etude, Database $database){
+    private function persistQuestionsFromHtml(String $questionnaire_html, ObjectId $id_etude, Array $label_scores, Database $database){
 
       // On selectionne la collection "question" de la BDD
       $collection = $database->selectCollection(self::COLLECTION_QUESTIONS);
@@ -346,31 +349,18 @@ class DefaultController extends Controller
           case 'textarea':
             //rien à ajouter.
             break;
-          case 'radio':
-            //on récupère toutes les réponses possibles.
-            foreach($ques->div->children() as $reponse){
-              $label_reponse[self::KEY_LABEL_REPONSES_COLLECTION_QUESTIONS] = trim($reponse->input->attributes()[self::ATTRIBUT_FORMULAIRE_VALUE]);
-              $label_reponse['MS'] = 1;
-              $label_reponse['RACHIS'] = 2;
-              $label_reponses[] = $label_reponse;
-            }
-            break;
-          case 'checkbox':
-            //on récupère toutes les réponses possibles.
-            foreach($ques->div->children() as $reponse){
-              $label_reponse[self::KEY_LABEL_REPONSES_COLLECTION_QUESTIONS] = trim($reponse->input->attributes()[self::ATTRIBUT_FORMULAIRE_VALUE]);
-              $label_reponse['MS'] = 1;
-              $label_reponse['RACHIS'] = 2;
-              $label_reponses[] = $label_reponse;
-            }
-            break;
           case 'option'://même traitement que 'option-multiple'
           case 'option-multiple':
             //on récupère toutes les réponses possibles.
             foreach($ques->div->select->children() as $reponse){
+              $scores = (string)$reponse->attributes()['value'];
+              $value_scores = explode(" ; ", $scores);
               $label_reponse[self::KEY_LABEL_REPONSES_COLLECTION_QUESTIONS] = trim($reponse);
-              $label_reponse['MS'] = 1;
-              $label_reponse['RACHIS'] = 2;
+
+              foreach($label_scores as $indice => $label_score){
+                $label_reponse[$label_score] = (int)$value_scores[$indice];
+              }
+
               $label_reponses[] = $label_reponse;
             }
             break;
@@ -468,55 +458,6 @@ class DefaultController extends Controller
               $optionQuestion.='<input id="textareaInput" name="'.$numero.'" class="form-control" type="textarea" />';
               $optionQuestion.='</div>';
               break;
-            case 'radio':
-              # code...
-              //on récupère les réponses
-              $reponses = $question[self::CHAMP_LABEL_REPONSES_COLLECTION_QUESTIONS];
-              //entete
-              $enteteQuestion.='<!-- Multiple radios -->';
-              //titre
-              $titreQuestion.='<label class="col-sm-4 control-label" for="textInput">';
-              $titreQuestion.=$intitule.'</label>';
-              //options
-              $optionQuestion.='<div class="col-sm-7" >';
-
-              #POUR CHAQUE_QUESTION
-              $ind=0;
-              foreach($question[self::CHAMP_LABEL_REPONSES_COLLECTION_QUESTIONS] as $reponse){
-                  $optionQuestion .= '<label class="radio" for="sexe">';
-                  $optionQuestion .= '<input name="'.$numero.'" id="radios-'.$ind.'" value="'.$reponse[self::KEY_LABEL_REPONSES_COLLECTION_QUESTIONS];
-                  $optionQuestion .= '" type="radio" />'.$reponse[self::KEY_LABEL_REPONSES_COLLECTION_QUESTIONS];
-                  $optionQuestion .= '</label>';
-                  $ind++;
-                }
-                //on ferme les options
-              $optionQuestion.='</div>';
-              break;
-            case 'checkbox':
-              # code...
-              //on récupère les réponses
-              $reponses = $question[self::CHAMP_LABEL_REPONSES_COLLECTION_QUESTIONS];
-              //entete
-              $enteteQuestion.='<!-- Multiple checkboxes -->';
-              //titre
-              $titreQuestion.='<label class="col-sm-4 control-label" for="textInput">';
-              $titreQuestion.=$intitule.'</label>';
-
-              //options
-              $optionQuestion.='<div class="col-sm-7" >';
-              #POUR CHAQUE_QUESTION
-              #PERSONALISER LE NAME EN FONCTION DE LA QUESTION QUAND IL Y AURA PLUSIEURS QUESTIONS DE CE TYPE
-              $ind=0;
-              foreach($question[self::CHAMP_LABEL_REPONSES_COLLECTION_QUESTIONS] as $reponse){
-                    $optionQuestion .= '<label class="checkbox" for="loc-douleur">';
-                    $optionQuestion .= '<input name="'.$numero.'[]" id="checkboxes-'.$ind.'" value="'.$reponse[self::KEY_LABEL_REPONSES_COLLECTION_QUESTIONS];
-                    $optionQuestion .= '" type="checkbox" />'.$reponse[self::KEY_LABEL_REPONSES_COLLECTION_QUESTIONS];
-                    $optionQuestion .= '</label>';
-                    $ind++;
-                }
-              //on ferme les options
-              $optionQuestion.='</div>';
-              break;
             case 'option':
               //entete
               $enteteQuestion.='<!-- Select Single -->';
@@ -585,7 +526,7 @@ class DefaultController extends Controller
         $questions[] = $cursor->getNext();
       }
 
-      $score = array( 'MS' => 0 , 'RACHIS' => 0);
+      $score = array();
 
       $reponse = $reponses[0]; // POUR FIXER A UN ET UN SEUL USER (cas d'exemple)
       foreach($reponse as $key => $value){ // pour chaque reponse on récupère l'id de la question et la/les reponses données
@@ -594,8 +535,14 @@ class DefaultController extends Controller
             if($key == $question[self::CHAMP_ID_COLLECTION_QUESTIONS]){
               foreach($question[self::CHAMP_LABEL_REPONSES_COLLECTION_QUESTIONS] as $label){ // On parcours les différents labels de la question
                 if($label[self::KEY_LABEL_REPONSES_COLLECTION_QUESTIONS] == $value){ // Jusqu'à trouver celui qui match avec la réponse donnée par l'utilisateur
-                  $score['RACHIS'] += $label['RACHIS'];
-                  $score['MS'] += $label['MS'];
+                  foreach($label as $label_score => $value_score){
+                    if($label_score != self::KEY_LABEL_REPONSES_COLLECTION_QUESTIONS){
+                      if(isset($score[$label_score]))
+                        $score[$label_score]+=(int)$value_score;
+                      else
+                        $score[$label_score]=(int)$value_score;
+                    }
+                  }
                 }
               }
             }
