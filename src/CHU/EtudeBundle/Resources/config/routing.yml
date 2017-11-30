@@ -4,9 +4,13 @@ chu__homepage:
     path:     /
     defaults: { _controller: CHUEtudeBundle:Default:index}
 
-chu_etude_build_form:
+chu_etude_create_form:
     path:     /create
-    defaults: { _controller: CHUEtudeBundle:Default:createFormBuilder }
+    defaults: { _controller: CHUEtudeBundle:Default:create_form }
+
+chu_etude_build_form:
+    path:     /build
+    defaults: { _controller: CHUEtudeBundle:Default:build_form }
 
 chu_etude_submit_builded_form:
     path:     /submit

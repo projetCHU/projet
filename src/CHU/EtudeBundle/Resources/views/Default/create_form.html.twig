@@ -1,0 +1,42 @@
+{# /src/CHU/EtudeBundle/Resources/views/Default/build_form.html.twig #}
+
+{% extends "CHUEtudeBundle::layoutBundle.html.twig" %}
+
+{% block title %} Création d'une étude {% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+{% endblock %}
+
+{% block body_bundle %}
+
+<br/>
+<br/>
+<br/>
+<h1 style="border-bottom: solid"> Création d'un questionnaire</h1>
+<br/>
+<br/>
+<br/>
+
+    <form method="post" action= "{{path('chu_etude_build_form')}}">
+    <div style="float:left">
+      <p>Nom du questionnaire :</p><input type="text" id="form_name" name="form_title" required>
+    </div>
+
+    <div  type="option-multiple" id="div_choix_scores" style="float:left; margin-left:30px">
+      <p>Score(s) utilisé(s) pour le questionnaire :</p>
+      <p>
+        <input id="checkBox" type="checkbox" name='scores[]' value="MS" style="margin:10px">MS
+        <input id="checkBox" type="checkbox" name='scores[]' value="Rachis" style="margin:10px">Rachis
+      </p>
+    </div>
+
+<br/>
+    <button type="submit" class="btn btn-success" style="float:left;margin-left:30px">Créer</button>
+
+</form>
+
+{% endblock %}
+
+{% block javascripts %}
+{% endblock %}

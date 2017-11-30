@@ -25,6 +25,7 @@ class DefaultController extends Controller
 {
 
   const VUE_HOMEPAGE = "CHUEtudeBundle:Default:index.html.twig";
+  const VUE_CREATE_FORM = "CHUEtudeBundle:Default:create_form.html.twig";
   const VUE_FORM_BUILDER = "CHUEtudeBundle:Default:build_form.html.twig";
   const VUE_LISTE_ETUDES = "CHUEtudeBundle:Default:show_etudes.html.twig";
   const VUE_SHOW_QUESTIONNAIRE = "CHUEtudeBundle:Default:show_questionnaire.html.twig";
@@ -87,14 +88,32 @@ class DefaultController extends Controller
 
 
     /**
-      AFFICHER LE FORMBUILDER POUR CONSTRUIRE UNE ETUDE
+      AFFICHER LA PAGE DE CRÉATION D'UN QUESTIONNAIRE
     **/
-    public function createFormBuilderAction(){
+    public function create_formAction(){
+      return $this->render(self::VUE_CREATE_FORM);
+    }
+
+    /**
+      AFFICHER LE FORMBUILDER POUR CONSTRUIRE UN QUESTIONNAIRE
+    **/
+    public function build_formAction(Request $request){
       /**
-      * Ici on affiche le form builder à l'utilisateur
+      * Ici on afficher le form_builder à l'utilisateur
       */
-      $content = $this->get('templating')->render(self::VUE_FORM_BUILDER);
-      return new Response($content);
+      if(! $request->isMethod('POST'))
+        throw new NotFoundHttpException(self::ERROR_PAGE_INEXISTANTE);
+
+      $les_vars = $request->request->all();
+      $title_form = $les_vars['form_title'];        //on récupère le titre dans la variable POST
+      $string_score="";                             //on récupère les scores dans la variable POST
+      foreach($les_vars['scores'] as $key => $value){
+        if($key==sizeof($les_vars))
+          $string_score.="".$value;
+        else
+          $string_score.=$value.";";
+      }
+      return $this->render(self::VUE_FORM_BUILDER,array('scores'=>$string_score,'form_title'=>$title_form));
     }
 
     /**
