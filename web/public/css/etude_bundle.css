@@ -33,3 +33,18 @@ th.column_header{
   border:solid black 3px;
   background-color: #00EEEE;
 }
+
+.tabRep_header_col{
+  font-size: 15px;
+}
+
+.tab_cell_score{
+  width: 30px;
+}
+.tab_cell_rep{
+  font-size: 15px;
+}
+
+#buttonAddRow{
+  font-size: 15px;
+}

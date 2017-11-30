@@ -4,89 +4,26 @@ chu__homepage:
     path:     /
     defaults: { _controller: CHUEtudeBundle:Default:index}
 
+chu_etude_create_form:
+    path:     /create
+    defaults: { _controller: CHUEtudeBundle:Default:create_form }
+
 chu_etude_build_form:
-    path:     /build_form
+    path:     /build
     defaults: { _controller: CHUEtudeBundle:Default:build_form }
 
 chu_etude_submit_builded_form:
-    path:     /submit_builded_form
-    defaults: { _controller: CHUEtudeBundle:Default:submit_builded_form }
+    path:     /submit
+    defaults: { _controller: CHUEtudeBundle:Default:submitBuiltForm }
 
 chu_etude_show_etudes:
-    path:     /show_etudes
-    defaults: { _controller: CHUEtudeBundle:Default:show_etudes }
+    path:     /list
+    defaults: { _controller: CHUEtudeBundle:Default:showListForms }
 
 chu_etude_action_questionnaire:
-    path:     /action_questionnaire
-    defaults: { _controller: CHUEtudeBundle:Default:action_questionnaire}
+    path:     /show
+    defaults: { _controller: CHUEtudeBundle:Default:handleChoice}
 
 chu_etude_questionnaire_repondu:
-    path:     /questionnaire_repondu
-    defaults: { _controller: CHUEtudeBundle:Default:questionnaire_repondu}
-
-chu_etude_delete_answer:
-    path:     /delete_answer
-    defaults: { _controller: CHUEtudeBundle:Default:delete_answer}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-#PREVIOUS VERSION
-
-chu_etude_questionnaire:
-    path:     /etud/{id}
-    defaults:
-        _controller: CHUEtudeBundle:Default:questionnaire
-        id: 0
-
-chu_etude_questionnaire_reponse:
-    path:     /reponse
-    defaults: { _controller: CHUEtudeBundle:Default:reponse }
-
-chu_etude_questionnaire_creation_question:
-    path:     /newQuestion
-    defaults: { _controller: CHUEtudeBundle:Default:newQuestion }
-
-chu_etude_questionnaire_creation_question_valide:
-    path:     /newQuestion_done
-    defaults: { _controller: CHUEtudeBundle:Default:newQuestion_done }
-
-chu_etude_questionnaire_reponse_questionnaire:
-    path:     /reponseQuestionnaire/{id}
-    defaults:
-        _controller: CHUEtudeBundle:Default:reponseQuestionnaire
-        id: 0
-
-chu_etude_questionnaire_Etude_list:
-    path:     /Etudelist
-    defaults: { _controller: CHUEtudeBundle:Default:EtudeList }
-
-chu_etude_questionnaire_creation_etude:
-    path:     /newEtude
-    defaults: { _controller: CHUEtudeBundle:Default:newEtude }
-
-chu_etude_questionnaire_creation_etude_valide:
-    path:     /newEtude_done
-    defaults: { _controller: CHUEtudeBundle:Default:newEtude_done }
-
-chu_etude_questionnaire_resultats:
-    path:     /AnswerList
-    defaults: { _controller: CHUEtudeBundle:Default:Resultats }
-
-chu_etude_questionnaire_EtudeDisplay:
-    path:     /EtudeDisplay
-    defaults: { _controller: CHUEtudeBundle:Default:EtudeDisplay }
-
-chu_etude_questionnaire_EtudeResults:
-    path:     /EtudeResults
-    defaults: { _controller: CHUEtudeBundle:Default:EtudeResults }
+    path:     /answers/submit
+    defaults: { _controller: CHUEtudeBundle:Default:submitFormAnswered}

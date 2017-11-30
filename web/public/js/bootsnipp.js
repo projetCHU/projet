@@ -612,6 +612,31 @@ return result;};$.fn.getComments=function(asArray){return getCommentsFromEl(this
 
 
 
+/* ** cartouche ********************************************************************* */
+/* Script complet de gestion d'une requête de type XMLHttpRequest                     */
+/* Par Sébastien de la Marck (aka Thunderseb)                                         */
+/* ********************************************************************************** */
+
+function getXMLHttpRequest() {
+	var xhr = null;
+
+	if (window.XMLHttpRequest || window.ActiveXObject) {
+		if (window.ActiveXObject) {
+			try {
+				xhr = new ActiveXObject("Msxml2.XMLHTTP");
+			} catch(e) {
+				xhr = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+		} else {
+			xhr = new XMLHttpRequest();
+		}
+	} else {
+		alert("Votre navigateur ne supporte pas l'objet XMLHTTPRequest...");
+		return null;
+	}
+
+	return xhr;
+}
 
 
 
@@ -722,6 +747,10 @@ var FormBuilder = function ($) {
       };
     }(jQuery);
 
+
+
+
+
     // ==== Menu ====
     var MenuHandler = function() {
 
@@ -794,13 +823,17 @@ var FormBuilder = function ($) {
             $contextMenu.hide();
           });
 
-          $(document).click(function(event) {
-            if(!$(event.target).closest(contextMenu).length) {
-              if($(contextMenu).is(":visible")) {
-                $(contextMenu).hide();
+
+            //BUG CLIQUE DROIT : À CORRIGER
+            /*
+            $(document).click(function(event) {
+              if(!$(event.target).closest(contextMenu).length) {
+                if($(contextMenu).is(":visible")) {
+                  $(contextMenu).hide();
+                }
               }
-            }
-          });
+            });
+            */
         }
       };
     }(jQuery);
@@ -876,18 +909,14 @@ var FormBuilder = function ($) {
             case 'LISTE CHOIX MULTIPLES':
               SelectHandler.init(t);
             break;
-            /* Boutons ======================== */
-            /* On en laisse un juste pour l'exemple
-            case 'file button':
-              ButtonHandler.fileButton(t);
-            break;
-            */
+            /* Separator======================= */
+            case 'SEPARATOR':
+              SeparatorHandler.init(t);
             default:
               // Special cases
               if(target.is('legend')) {
                 OtherComponentsHandler.legend(target);
               }
-
               break;
           }
         },
@@ -897,200 +926,107 @@ var FormBuilder = function ($) {
       }
     }(jQuery);
 
-    var ButtonHandler = function() {
-
-      return {
-        fileButton: function(target) {
-          TemplateHandler.getEditForm(target.find('label').html()).insertAfter(target);
-          $('#editForm').append(TemplateHandler.getInput('idInput', 'ID / Name', target.find('input').prop('id')));
-          $('#editForm').append(TemplateHandler.getInput('labelInput', 'Label Text', target.find('label').html()));
-          $('#editForm').append(TemplateHandler.getInput('helpblockInput', 'Help Text', target.find('p.help-block').html()));
-          $('#editForm').append(TemplateHandler.createSelectboxSingle('labelSizeSelect', 'Label Size', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], TemplateHandler.getSize(target, 'label')));
-          $('#editForm').append(TemplateHandler.createSelectboxSingle('inputSizeSelect', 'Input Size', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], TemplateHandler.getSize(target, 'input')));
-
-          TemplateHandler.init(function() {
-            var t = ComponentActionHandler.getCurrentTarget();
-            var $editForm = $('#editForm');
-            if($editForm.find('#idInput').val() !== '') {
-              t.find('input').attr('id', $editForm.find('#idInput').val()).attr('name', $editForm.find('#idInput').val());
-            }
-            if($('#labelInput').val() !== '') {
-              t.find('label:first').html($('#labelInput').val());
-            }
-
-            target.find('p.help-block').html($('#helpblockInput').val());
-            TemplateHandler.updateSize(target.find('label:eq(0)'), $('#labelSizeSelect').val()); // label
-            TemplateHandler.updateSize(target.find('input').parents('div[class^="col-"]').first(), $('#inputSizeSelect').val()); // input
-          });
-        },
-        singleButton: function(target) {
-          TemplateHandler.getEditForm(target.find('label').html()).insertAfter(target);
-          $('#editForm').append(TemplateHandler.getInput('labelInput', 'Label Text', target.find('label').html()));
-          $('#editForm').append(TemplateHandler.getInput('idInput', 'ID / Name', target.find('button').prop('id')));
-          $('#editForm').append(TemplateHandler.getInput('buttonLabelInput', 'Button Text', target.find('button').html()));
-          $('#editForm').append(TemplateHandler.createSelectboxSingle('buttonTypeSelect', 'Button Type', ['Default', 'Primary', 'Success', 'Info', 'Warning', 'Danger'], target.find('button').prop('class').split(' ')[1].split('-')[1]));
-          $('#editForm').append(TemplateHandler.getInput('helpblockInput', 'Help Text', target.find('p.help-block').html()));
-          $('#editForm').append(TemplateHandler.createSelectboxSingle('labelSizeSelect', 'Label Size', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], TemplateHandler.getSize(target, 'label')));
-          $('#editForm').append(TemplateHandler.createSelectboxSingle('inputSizeSelect', 'Input Size', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], TemplateHandler.getSize(target, 'button')));
-
-
-          TemplateHandler.init(function() {
-            var t = ComponentActionHandler.getCurrentTarget();
-
-            var inputSelector = 'button';
-
-            var $editForm = $('#editForm');
-            if($editForm.find('#idInput').val() !== '') {
-              t.find(inputSelector).attr('id', $editForm.find('#idInput').val()).attr('name', $editForm.find('#idInput').val());
-            }
-            if($('#labelInput').val() !== '') {
-              t.find('label').html($('#labelInput').val()).prop('for', $editForm.find('#idInput').val());
-            }
-            if($('#placeholderInput').val() !== '') {
-              t.find(inputSelector).attr('placeholder', $('#placeholderInput').val());
-            }
-
-            if($('#buttonLabelInput').val() !== '') {
-              t.find(inputSelector).html($('#buttonLabelInput').val());
-            }
-
-            t.find(inputSelector).removeClass().addClass('btn btn-' + $('#buttonTypeSelect').val().toLowerCase());
-            t.find('p.help-block').html($('#helpblockInput').val());
-
-            TemplateHandler.updateSize(t.find('label'), $('#labelSizeSelect').val()); // label
-            TemplateHandler.updateSize(t.find(inputSelector).parents('div[class^="col-"]').first(), $('#inputSizeSelect').val()); // input
-          });
-        },
-        doubleButton: function(target) {
-          TemplateHandler.getEditForm(target.find('label').html()).insertAfter(target);
-          $('#editForm').append(TemplateHandler.getInput('labelInput', 'Label Text', target.find('label').html()));
-          $('#editForm').append(TemplateHandler.getInput('idInput', 'Button 1 ID / Name', target.find('button').prop('id')));
-          $('#editForm').append(TemplateHandler.getInput('buttonLabelInput', 'Button 1 Text', target.find('button').html()));
-          $('#editForm').append(TemplateHandler.createSelectboxSingle('buttonTypeSelect', 'Button 1 Type', ['Default', 'Primary', 'Success', 'Info', 'Warning', 'Danger'], target.find('button').prop('class').split(' ')[1].split('-')[1]));
-
-          // Second button
-          $('#editForm').append(TemplateHandler.getInput('idInput2', 'Button 2 ID / Name', target.find('button:eq(1)').prop('id')));
-          $('#editForm').append(TemplateHandler.getInput('buttonLabelInput2', 'Button 2 Text', target.find('button:eq(1)').html()));
-          $('#editForm').append(TemplateHandler.createSelectboxSingle('buttonTypeSelect2', 'Button 2 Type', ['Default', 'Primary', 'Success', 'Info', 'Warning', 'Danger'], target.find('button:eq(1)').prop('class').split(' ')[1].split('-')[1]));
-
-          $('#editForm').append(TemplateHandler.getInput('helpblockInput', 'Help Text', target.find('p.help-block').html()));
-          $('#editForm').append(TemplateHandler.createSelectboxSingle('labelSizeSelect', 'Label Size', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], TemplateHandler.getSize(target, 'label')));
-          $('#editForm').append(TemplateHandler.createSelectboxSingle('inputSizeSelect', 'Input Size', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], TemplateHandler.getSize(target, 'button')));
-
-
-          TemplateHandler.init(function() {
-            var t = ComponentActionHandler.getCurrentTarget();
-
-            var inputSelector = 'button';
-
-            var $editForm = $('#editForm');
-            if($editForm.find('#idInput').val() !== '') {
-              t.find(inputSelector).attr('id', $editForm.find('#idInput').val()).attr('name', $editForm.find('#idInput').val());
-            }
-            if($('#buttonLabelInput').val() !== '') {
-              t.find(inputSelector).html($('#buttonLabelInput').val());
-            }
-            t.find(inputSelector).removeClass().addClass('btn btn-' + $('#buttonTypeSelect').val().toLowerCase());
-
-            // Second button
-            if($editForm.find('#idInput2').val() !== '') {
-              t.find(inputSelector + ':eq(1)').attr('id', $editForm.find('#idInput2').val()).attr('name', $editForm.find('#idInput2').val());
-            }
-            if($('#buttonLabelInput2').val() !== '') {
-              t.find(inputSelector + ':eq(1)').html($('#buttonLabelInput2').val());
-            }
-            t.find(inputSelector + ':eq(1)').removeClass().addClass('btn btn-' + $('#buttonTypeSelect2').val().toLowerCase());
-
-            // Others..
-            if($('#labelInput').val() !== '') {
-              t.find('label').html($('#labelInput').val()).prop('for', $editForm.find('#idInput').val());
-            }
-
-            t.find('p.help-block').html($('#helpblockInput').val());
-
-            TemplateHandler.updateSize(t.find('label'), $('#labelSizeSelect').val()); // label
-            TemplateHandler.updateSize(t.find(inputSelector).parents('div[class^="col-"]').first(), $('#inputSizeSelect').val()); // input
-          });
-        },
-        buttonGroup: function(target) {
-          TemplateHandler.getEditForm(target.find('label').html()).insertAfter(target);
-          $('#editForm').append(TemplateHandler.getInput('labelInput', 'Label Text', target.find('label').html()));
-          $('#editForm').append(TemplateHandler.getInput('helpblockInput', 'Help Text', target.find('p.help-block').html()));
-          $('#editForm').append(TemplateHandler.createSelectboxSingle('labelSizeSelect', 'Label Size', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], TemplateHandler.getSize(target, 'label')));
-          $('#editForm').append(TemplateHandler.createSelectboxSingle('inputSizeSelect', 'Input Size', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], TemplateHandler.getSize(target, 'button')));
-          $('#editForm').append(TemplateHandler.createTextArea('buttonNamesArea', 'Button Names', []));
-          $('#editForm').append(TemplateHandler.createTextArea('buttonValuesArea', 'Button ID´s / Names', []));
-
-          var buttons = target.find('button');
-          var vButtonNames = '', vButtonValues = '', length = buttons.length;
-          $.each(buttons, function(i, val) {
-            vButtonNames += $(val).html().trim();
-            vButtonValues += $(val).prop('id');
-            if(i !== length - 1) {
-              vButtonNames += '\r\n';
-              vButtonValues += '\r\n';
-            }
-          });
-
-          $('#buttonNamesArea').val(vButtonNames).prop('rows', buttons.length === 1 ? 2 : buttons.length + 1);
-          $('#buttonValuesArea').val(vButtonValues).prop('rows', buttons.length === 1 ? 2 : buttons.length + 1);
-
-          TemplateHandler.init(function() {
-            var t = ComponentActionHandler.getCurrentTarget();
-
-            if($('#labelInput').val() !== '') {
-              t.find('label').html($('#labelInput').val()).prop('for', $('#idInput').val());
-            }
-
-            t.find('p.help-block').html($('#helpblockInput').val());
-            TemplateHandler.updateSize(t.find('label'), $('#labelSizeSelect').val()); // label
-            TemplateHandler.updateSize(t.find('.btn-group').parents('div[class^="col-"]').first(), $('#inputSizeSelect').val()); // input
-
-            target.find('.btn-group').html('');
-            var values = $('#buttonValuesArea').val().split('\n');
-            $.each($('#buttonNamesArea').val().split('\n'), function(i, val) {
-              $button = $('<button type="button" class="btn btn-default">' + val + '</button>');
-              var id = i <= values.length - 1 ? values[i] : '';
-              $button.prop('id', id).prop('value', id);
-              target.find('.btn-group').append($button);
-            });
-
-          });
-        }
-      };
-    }(jQuery);
 
     /**
-      REGLAGES CLIQUE DROIT SUR ELEMENT 'SELECT'. LES SELECT  AVEC OPTIONS
+      REGLAGES CLIQUE DROIT SUR ELEMENTS 'SELECT' : liste de choix.
     **/
     var SelectHandler = function() {
       var initGeneral = function(target) {
         TemplateHandler.getEditForm(target.find('label').html()).insertAfter(target);
-        //$('#editForm').append(TemplateHandler.getInput('idInput', 'ID / Name', target.find('select').prop('id')));
-        $('#editForm').append(TemplateHandler.getInput('labelInput', 'Intitulé', target.find('label').html()));
-        //$('#editForm').append(TemplateHandler.getInput('helpblockInput', 'Help Text', target.find('p.help-block').html()));
+        $('#editForm').append(TemplateHandler.getInput('labelInput', 'Question', target.find('label').html()));
 
-        //si on commente les deux options suivantes on a un probleme d'affichage  de la question dans la zone de création quand on sauvegarde les réglages.
-        $('#editForm').append(TemplateHandler.createSelectboxSingle('labelSizeSelect', 'Label Size', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], TemplateHandler.getSize(target, 'label')));
-        $('#editForm').append(TemplateHandler.createSelectboxSingle('inputSizeSelect', 'Input Size', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], TemplateHandler.getSize(target, 'select')));
+        //TESTS POUR INCLURE DES VALEURS DE RÉFÉRENCES.
+        $('#editForm').append(TemplateHandler.createSelectboxSingle('labelvalref','Valeurs de références'));
 
-        // Option and values
-        $('#editForm').append(TemplateHandler.createTextArea('optionsArea', 'Options', []));
-        $('#editForm').append(TemplateHandler.createTextArea('valuesArea', 'Valeurs', []));
-        var options = target.find('select option');
-        var vOpt = '', vVal = '', length = options.length;
-        $.each(options, function(i, val) {
-          vOpt += $(val).html().trim()
-          vVal += $(val).prop('value');
-          if(i !== length - 1) {
-            vOpt += '\r\n';
-            vVal += '\r\n';
-          }
+        //le tableau dynamic pour les réponses.
+        var scores = $('#set_scores').attr('value');
+        $('#editForm').append(TemplateHandler.createTableDynamicIncrement('le_tab','test tableau','Réponses',scores));
+
+        //GESTION DU BOUTON VIDER DU TABLEAU DE RÉPONSE.
+        document.getElementById('buttonClear').addEventListener('click',function(){
+          $('#tabRep').html('<table id="tabRep" name="tabRep" ></table>');//ON REMPLACE LE TABLEAU PAR UN TABLEAU VIERGE
         });
 
-        $('#optionsArea').val(vOpt).prop('rows', options.length === 1 ? 2 : options.length + 1);
-        $('#valuesArea').val(vVal).prop('rows', options.length === 1 ? 2 : options.length + 1);
-      };
+
+
+        //GESTION DU BOUTON AJOUT LIGNE TABLEAU DE RÉPONSE.
+        //EN fonction des scores cochés dans le widget "chexkboxesScore" on affiche un tableau pour indique le nom des réponses et les scores de chaque réponse.
+        document.getElementById('buttonAddRow').addEventListener('click',function(){
+          var $le_tab = document.getElementById('tabRep');                        //LE TABLEAU DES RÉPONSES
+          var nb_row = document.getElementsByClassName("row_reponse").length;     //LE NOMBRE DE LIGNE DÉJÀ PRÉSENTE DANS LE TABLEAU
+
+          if(null== document.getElementById("tabRep_header_row")){               //Si le tableau ne contient pas encore de noms de colonnes(aucune ligne de réponse n'a été ajoutée, le tableau est vierge)
+              $('<tr id="tabRep_header_row" name="tabRep_header_row">').appendTo($le_tab);                    //On ajoute la ligne header du tableau
+              $('<th name="tabRep_header_col_rep" class="tabRep_header_col">Intitulé</th>').appendTo($le_tab); //on ajoute la colonnne réponse
+
+              var scores = $('#set_scores').attr('value');    //on récupère la balise score (elle contien dans son attribut value la liste des scores pour le questionnaire)
+              scores = scores.trim().split(';');              //on split et on découpe sur les ;
+              if(scores.length==1 && scores[0]=="")           //si la chaine est ""
+                scores=null;                                  //on met à null
+              $.each(scores,function(i){                      //pour chaque score
+                  scores[i]=scores[i].trim();                 //on trim la chaîne
+                  if(scores[i]!="")                           //on vérifie que la chaîne n'est pas vide
+                    $('<th name="tabRep_header_col_score" class="tabRep_header_col" >'+scores[i]+'</th>').appendTo($le_tab);  //on ajoute une colonne dans le tableau pour ce score
+              });
+              $('</tr>').appendTo($le_tab);                   //on ferme la ligne header.
+          };//fin du test pour l'ajout de l'entete avec les bonnes colonnes en fonction des scores cochés
+
+
+          $('<tr class="row_reponse" id="row_reponse'+nb_row+'">').appendTo($le_tab);    //on ajoute le debu de la nouvelle ligne de réponse.
+          $('<td><input class="tab_cell_rep" type="text" id="'+nb_row+'0"></td>').appendTo($le_tab);//on ajoute la colonne "réponse" ayant pour indice (nb_row,0) avec nbrow=numéro de la nouvelle ligne
+
+          var header_scores =  $("[name='tabRep_header_col_score']"); //on récupère les scores présent dans les colonnes du header du tableau
+          $.each(header_scores,function(i){                            //pour chacun on met une colonne dans la nouvelle ligne
+            var ind_col = i+1;                                         //indice colonne de la case du tbleau
+            $('<td><input class="tab_cell_score" type="text" id="'+nb_row+''+ind_col+'"></td>').appendTo($le_tab);//la nouvelle colonne avec pour indice (nb_row,ind_col) avec nbrow=numéro de la nouvelle ligne.
+          });
+          $('</tr>').appendTo($le_tab);                      //on ferme la balise de la nouvelle ligne ajoutée
+        });//FIN AJOUT LIGNE
+
+
+
+        //LES MODULES DU MENU SONT CHARGÉS, MAINTENANT ON REMPLI LE TABLEAU AVEC LES VALEURS DÈJÀ PRÉSENTE SI IL Y EN A
+        var options = target.find('select option');     //les options (réponses qui existent déjà)
+        var vOpt = '', vVal = '', length = options.length; //les autres variables.
+        var $le_tab = document.getElementById('tabRep');//le tableau
+        //on écrit l'entête du tableau.
+        $('<tr id="tabRep_header_row" name="tabRep_header_row">').appendTo($le_tab);                    //On ajoute la ligne header du tableau
+        $('<th name="tabRep_header_col_rep" class="tabRep_header_col">Intitulé</th>').appendTo($le_tab); //on ajoute la colonnne réponse
+
+        var scores = $('#set_scores').attr('value');    //on récupère la balise score (elle contien dans son attribut value la liste des scores pour le questionnaire)
+        scores = scores.trim().split(';');              //on split et on découpe sur les ;
+        if(scores.length==1 && scores[0]=="")           //si la chaine est ""
+          scores=null;                                  //on met à null
+        $.each(scores,function(i){                      //pour chaque score
+            scores[i]=scores[i].trim();                 //on trim la chaîne
+            if(scores[i]!="")                           //on vérifie que la chaîne n'est pas vide
+              $('<th name="tabRep_header_col_score" class="tabRep_header_col" >'+scores[i]+'</th>').appendTo($le_tab);  //on ajoute une colonne dans le tableau pour ce score
+        });
+        $('</tr>').appendTo($le_tab);                   //on ferme la ligne header.
+
+
+        $.each(options, function(i, val) {              //pour chaque réponse à la question
+          vOpt = $(val).html().trim();                 //on récupère les label des réponses
+          vVal = $(val).prop('value');                 //on récupère les labels des values des réponses.
+            //on ajoute le debut de la ligne de réponse
+          $('<tr class="row_reponse">').appendTo($le_tab);
+            //la colonne réponse avec sa valeur
+          $('<td><input class="tab_cell_rep" type="text" id="'+i+'0" value="'+vOpt+'"></td>').appendTo($le_tab);
+
+            //pour chaque valuation dans l'attribut value de la réponse (pour chaque score)
+          var tabVal = vVal.trim().split(";");      //on traite la chaine de l'attribut value qui contient les valeurs des scores.
+          $.each(tabVal,function(j,valu){
+            valu = valu.trim();
+              //on ajoute la case du score dans le tableau
+            $('<td><input class="tab_cell_score" type="text" id="'+i+''+(j+1)+'" value="'+valu+'"></td>').appendTo($le_tab);
+          });
+
+            //fin de la ligne de réponse
+          $('</tr>').appendTo($le_tab);
+        });//fin each sur les réponses
+      };//initGeneral fin
+
+
 
       return {
         init: function(target) {
@@ -1103,24 +1039,45 @@ var FormBuilder = function ($) {
         defaultApplyCode: function(target) {
           var $editForm = $('#editForm');
           if($editForm.find('#idInput').val() !== '') {
-            target.find('select').attr('id', $editForm.find('#idInput').val()).attr('name', $editForm.find('#idInput').val());
+            target.find('table').attr('id', $editForm.find('#idInput').val()).attr('name', $editForm.find('#idInput').val());
           }
           if($('#labelInput').val() !== '') {
             target.find('label:first').html($('#labelInput').val());
           }
 
           target.find('p.help-block').html($('#helpblockInput').val());
-          TemplateHandler.updateSize(target.find('label'), $('#labelSizeSelect').val()); // label
-          TemplateHandler.updateSize(target.find('select').parents('div[class^="col-"]').first(), $('#inputSizeSelect').val()); // input
 
+
+
+          //COMMENTAIRE DEFAUT 1
+          //ON règle par défaut le "label size" à 4 et le "input size" à 7
+          TemplateHandler.updateSize(target.find('label'), 4);
+          TemplateHandler.updateSize(target.find('select').parents('div[class^="col-"]').first(), 7);
+
+          //obtention des elements pour former la liste déroulante
           target.find('select').html('');
-          var values = $('#valuesArea').val().split('\n');
-          $.each($('#optionsArea').val().split('\n'), function(i, val) {
-            $option = $('<option>' + val + '</option>');
-            $option.prop('value', i <= values.length - 1 ? values[i] : '');
-            target.find('select').append($option);
-          });
-        }
+          //var values = $('#valuesArea').val().split('\n');
+
+          //la zone de test pour le tableau de réponses
+          var scores_header =  $("[name='tabRep_header_col_score']"); //le nombre de colonne de score
+          var nb_row = document.getElementsByClassName("row_reponse").length;//le nombre de ligne de réponses dans le tableau
+          for (var i=0; i < nb_row; i++){                             //pour chaque réponse dans le tableau
+            var v0 = $('#'+i+''+0).val();   //le nom de la réponse
+            var score='';                   //le score de la réponse
+            var indLigne=i;                 //l'indice de ligne de la réponse dans le tableau
+            $.each(scores_header,function(indColonne){  //pour chaque colonne de score
+              if(indColonne==scores_header.length-1)
+                score+=$('#'+indLigne+''+(indColonne+1)).val();
+              else
+                score+=$('#'+indLigne+''+(indColonne+1)).val()+' ; ';//on stocke la valeur du score dans la var score
+            });
+
+            $option = $('<option>' + v0 + '</option>');     //on ajoute l'option
+            $option.prop('value', ''+score);                //on regle la propriété value à "score"
+            target.find('select').append($option);          //et on ajoute dans le code html de la zone markup(zone de finalisation)
+         }//for end
+       }//defaultApplyCode end
+
       };
     }(jQuery);
 
@@ -1133,13 +1090,9 @@ var FormBuilder = function ($) {
         var inputSelector = target.find('input[type="radio"]').length !== 0 ? 'input[type="radio"]' : 'input[type="checkbox"]';
 
         TemplateHandler.getEditForm(target.find('label').html()).insertAfter(target);
-        //$('#editForm').append(TemplateHandler.getInput('groupInput', 'Group Name', target.find(inputSelector).prop('name')));
-        $('#editForm').append(TemplateHandler.getInput('labelInput', 'Intitulé', target.find('label').html()));
-        //$('#editForm').append(TemplateHandler.getInput('helpblockInput', 'Help Text', target.find('p.help-block').html()));
 
-        //si on commente les deux options suivantes on a un probleme d'affichage  de la question dans la zone de création quand on sauvegarde les réglages.
-        $('#editForm').append(TemplateHandler.createSelectboxSingle('labelSizeSelect', 'Label Size', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], TemplateHandler.getSize(target, 'label')));
-        $('#editForm').append(TemplateHandler.createSelectboxSingle('inputSizeSelect', 'Input Size', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], TemplateHandler.getSize(target, 'input')));
+        $('#editForm').append(TemplateHandler.getInput('labelInput', 'Question', target.find('label').html()));
+
 
         // Option and values
         $('#editForm').append(TemplateHandler.createTextArea('optionsArea', inputSelector === 'input[type="radio"]' ? 'input name' : 'input name', []));
@@ -1180,8 +1133,10 @@ var FormBuilder = function ($) {
           var $helpBlock = target.find('p.help-block').clone().html($('#helpblockInput').val());
           target.find('p.help-block').remove();
 
-          TemplateHandler.updateSize(target.find('label:eq(0)'), $('#labelSizeSelect').val()); // label
-          TemplateHandler.updateSize(target.find('label:eq(1)').parents('div[class^="col-"]').first(), $('#inputSizeSelect').val()); // input
+          //COMMENTAIRE DEFAUT 2
+          //ON règle par défaut le "label size" à 4 et le "input size" à 7
+          TemplateHandler.updateSize(target.find('label:eq(0)'), 4); // label
+          TemplateHandler.updateSize(target.find('label:eq(1)').parents('div[class^="col-"]').first(), 7); // input
 
           // Options and values
           target.find('div:first').html(''); // Clean
@@ -1208,8 +1163,10 @@ var FormBuilder = function ($) {
       };
     }(jQuery);
 
+
+
     /**
-      REGLAGES CLIQUE DROIT SUR ELEMENT 'RADIO ET CHECKBOX'.
+      REGLAGES CLIQUE DROIT SUR ELEMENT INPUT : champ saisie classique, textarea
     **/
     var InputHandler = function() {
       var initGeneralInputForm = function(target) {
@@ -1220,14 +1177,8 @@ var FormBuilder = function ($) {
             typeOfInput = 'textarea';
           }
 
-          //$('#editForm').append(TemplateHandler.getInput('idInput', 'ID / Name', target.find(inputSelector).attr('id')));
-          $('#editForm').append(TemplateHandler.getInput('labelInput', 'Intitulé', target.find('label').html()));
-          //$('#editForm').append(TemplateHandler.getInput('placeholderInput', 'Placeholder', inputSelector === 'textarea' ? target.find(inputSelector).val() : target.find(inputSelector).attr('placeholder')));
-          //$('#editForm').append(TemplateHandler.getInput('helpblockInput', 'Help Text', target.find('p.help-block').html()));
+          $('#editForm').append(TemplateHandler.getInput('labelInput', 'Question', target.find('label').html()));
 
-          //si on commente les deux options suivantes on a un probleme d'affichage  de la question dans la zone de création quand on sauvegarde les réglages.
-          $('#editForm').append(TemplateHandler.createSelectboxSingle('labelSizeSelect', 'Label Size', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], TemplateHandler.getSize(target, 'label')));
-          $('#editForm').append(TemplateHandler.createSelectboxSingle('inputSizeSelect', 'Input Size', [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], TemplateHandler.getSize(target, typeOfInput)));
       };
 
       var initPreAppendTextForm = function(target, prependAppend) {
@@ -1275,8 +1226,10 @@ var FormBuilder = function ($) {
 
           target.find('p.help-block').html($('#helpblockInput').val());
 
-          TemplateHandler.updateSize(target.find('label'), $('#labelSizeSelect').val()); // label
-          TemplateHandler.updateSize(target.find(inputSelector).parents('div[class^="col-"]').first(), $('#inputSizeSelect').val()); // input
+          //COMMENTAIRE DEFAUT 3
+          //ON règle par défaut le "label size" à 4 et le "input size" à 7
+          TemplateHandler.updateSize(target.find('label'), 4); // label
+          TemplateHandler.updateSize(target.find(inputSelector).parents('div[class^="col-"]').first(),7 ); // input
         },
         prependOrAppendTextInput: function(target, prependOrAppend) {
           initGeneralInputForm(target);
@@ -1348,8 +1301,14 @@ var FormBuilder = function ($) {
       }
     }(jQuery);
 
+
+    /**
+      DONNE TOUTES LES METHODES DISPONIBLES DANS L MENU CONTEXTUEL POUR AFFICHER DES ÉLÉMENTS SUPPLÉMENTAIRES ÉVENTUELLEMEMNT.
+    **/
     var TemplateHandler = function() {
       return {
+
+
         init: function(func) {
           var $buttons = $('<div id="editActionSection" class="pull-right">' + '<button id="editConfirm" class="btn btn-primary">Save</button>' + '<button id="editAbort" class="btn btn-default">Cancel</button>' + '</div><div class="row"></div>');
           $('#editForm').append($buttons);
@@ -1358,6 +1317,9 @@ var FormBuilder = function ($) {
           $('#editForm').find('input:first').focus();
           this.getActionFunction = func;
         },
+
+
+
         getEditForm: function(title) {
           var $form = $('<form id="editForm"></form>');
           var $title = $('<h3>' + ('Réglages - ' + title) + '</h3>');
@@ -1385,6 +1347,31 @@ var FormBuilder = function ($) {
         updateSize: function(target, size) {
           target.removeClass(target.attr("class").match(/col-[\w-]*\b/)[0]).addClass('col-sm-' + size);
         },
+
+        /**
+        Créer un tableau modulable pour renseigner les réponses possibles à une questions.
+        **/
+        createTableDynamicIncrement: function(id,groupName, label){
+          //début du widget menu
+          var $createTableDynamicIncrementSelection = $('<div class="form-group">' + '<!-- Table autoIncrement -->' + '<label class="col-sm-4 control-label">' + label + '</label>' + '<div class="col-sm-7">' + '</div>' + '</div>');
+          //debut du tableau
+          var entete = $('<table id="tabRep" name="tabRep" >');
+          $createTableDynamicIncrementSelection.find('.col-sm-7').append(entete);
+
+          //on ferme le tableau
+          $createTableDynamicIncrementSelection.find('.col-sm-7').append('</table>');
+          //on ajoute le bouton 'ajouter une ligne de réponse'
+          $createTableDynamicIncrementSelection.find('.col-sm-7').append('<input id="buttonAddRow" type="button" class="buttonAddRow" name="buttonAddRow" value="Ajouter" >');
+          //on ajoute le bouton 'supprimer une ligne de réponse'
+          $createTableDynamicIncrementSelection.find('.col-sm-7').append('<input id="buttonClear" type="button" class="buttonClear" name="buttonClear" value="Vider" >');
+
+
+
+          return $createTableDynamicIncrementSelection;
+        },
+
+
+        /** Créer une checkbox sur une seule ligne dans le menu contextuel. **/
         // Example of use: TemplateHandler.createCheckboxInline('checkboxes', 'Required', ['Yes I do', 'yes'], ['Hell no', 'no']);
         createCheckboxInline: function(groupName, label, checkBoxes, checkboxValues) {
           var $checkBoxInlineSection = $('<div class="form-group">' + '<!-- Inline checkbox -->' + '<label class="col-sm-4 control-label">' + label + '</label>' + '<div class="col-sm-7">' + '</div>' + '</div>');
@@ -1396,8 +1383,10 @@ var FormBuilder = function ($) {
 
           var $helpBlock = $('<p class="help-block"></p>');
           $checkBoxInlineSection.find('.col-sm-7').append($helpBlock);
+
           return $checkBoxInlineSection;
         },
+        /** Créer une liste déroulante dans le menu contextuel. **/
         createSelectboxSingle: function(id, label, options, selected, values) {
           var $selectBoxSection = $('<div class="form-group"><!-- Select single --><label class="col-sm-4 control-label" for="' + id + '">' + label + '</label><div class="col-sm-7"></div></div>');
           var $singleSelect = $('<select id="' + id + '" name="' + id + '" class="form-control"></select>');
@@ -1414,6 +1403,7 @@ var FormBuilder = function ($) {
           $selectBoxSection.find('.col-sm-7').append($singleSelect).append($helpBlock);
           return $selectBoxSection;
         },
+        /** Créer une zone de text dans le menu contextuel. **/
         createTextArea: function(id, label, options, defaultText) {
           $textAreaSection = $('<div class="form-group" style="cursor: default;"><!-- Textarea --><label class="col-sm-4 control-label" for="textarea" style="cursor: default;">' + label + '</label><div class="col-sm-7"><div class="input-group"></div></div></div>');
           $textArea = $('<textarea id="' + id + '" name="' + id + '" class="form-control" cols="60" rows="' + options.length + '">' + (defaultText === undefined ? '' : defaultText) + '</textarea>');
@@ -1429,6 +1419,13 @@ var FormBuilder = function ($) {
           $textAreaSection.find('.input-group').append($textArea);
           return $textAreaSection;
         },
+
+
+
+
+        /*****
+        ESSAYE DE RAJOUTER UNE MÉTHODE QUI VIENDRAIT REQUETER POUR RÉCUPERER LES TYES DE DONNÉES DE RÉFÉRENCES POUR UNE QUESTION
+        **/
         getActionFunction: function() {
 
         }
