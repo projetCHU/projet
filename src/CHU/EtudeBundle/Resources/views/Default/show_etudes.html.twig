@@ -4,7 +4,7 @@
 
 
 {% block stylesheets %}
-	<link rel="stylesheet" type="text/css" href="{{asset('public/css/enregistrement.css')}}">
+	  {{ parent() }}
 {% endblock %}
 
 {% block title %}
@@ -13,23 +13,39 @@ Resultats
 
 {% block body_bundle %}
 
-  <div id="submit">
-      <form  action= "{{ path('chu_etude_action_questionnaire') }}" method="post">
-          <p>
-              <label for="newQuestion"> Étude : </label>
-  						<select name="id_etude" size="1">
-  							{% for etude in liste_etudes %}
-  								<option value="{{etude._id}}">{{etude.titre}}</option>
-  							{% endfor %}
-  						</select>
-              <select name="mode" size="1">
-                <option value="reponses">Consulter les réponses</option>
-                <option value="repondre">Repondre à l'étude</option>
-								<option value="supprimer">Supprimer l'étude</option>
-              </select>
-          </p>
-        <input type="submit" value="Voir"/>
-      </form>
-  </div>
-  <pre><a href="{{path('chu__homepage')}}">Retour à l'accueil</a></pre>
+<h1>Vos questionnaires : </h1>
+
+	<div id="liste_etudes">
+		{% if not liste_etudes is null %}
+		<table>
+			{% for etude in liste_etudes %}
+				<tr>
+					<td>{{etude.titre}}</td>
+					<td>
+						<form method="post" action="{{ path('chu_etude_check_results_form')}}">
+							<input type="hidden" name="id_etude" value="{{etude._id}}">
+							<button type="submit" class="btn btn-link">Consulter les résultats</button>
+						</form>
+					</td>
+					<td>
+						<form method="post" action="{{ path('chu_etude_answer_form')}}">
+							<input type="hidden" name="id_etude" value="{{etude._id}}">
+							<button type="submit" class="btn btn-link">Répondre</button>
+						</form>
+					</td>
+					<td>
+						<form method="post" action="{{ path('chu_etude_delete_form')}}">
+							<input type="hidden" name="id_etude" value="{{etude._id}}">
+							<button type="submit" class="btn btn-danger">x</button>
+						</form>
+					</td>
+				</tr>
+			{% endfor %}
+		</table>
+		{% else %}
+		<p>Vous n'avez aucune étude pour le moment</p>
+		{% endif %}
+	</div>
+	<br/>
+  <a id="cancelButton" href="{{ path('chu_homepage')}}" class="btn btn-primary">Retour à l'accueil</a>
 {% endblock %}

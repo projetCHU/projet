@@ -25,6 +25,7 @@ class DefaultController extends Controller
 {
 
   const VUE_HOMEPAGE = "CHUEtudeBundle:Default:index.html.twig";
+  const VUE_MESSAGE = "CHUEtudeBundle:Default:message_page.html.twig";
   const VUE_CREATE_FORM = "CHUEtudeBundle:Default:create_form.html.twig";
   const VUE_FORM_BUILDER = "CHUEtudeBundle:Default:build_form.html.twig";
   const VUE_LISTE_ETUDES = "CHUEtudeBundle:Default:show_etudes.html.twig";
@@ -38,10 +39,8 @@ class DefaultController extends Controller
   const ARG_VUE_LISTE_ETUDES = 'liste_etudes';
   const PARAM_VUE_LISTE_ETUDES_ID_ETUDE = 'id_etude';
 
-  const PARAM_VUE_LISTE_ETUDES_MODE = 'mode';
-  const PARAM_VUE_LISTE_ETUDES_MODE_REPONSES = 'reponses';
-  const PARAM_VUE_LISTE_ETUDES_MODE_REPONDRE = 'repondre';
-  const PARAM_VUE_LISTE_ETUDES_MODE_SUPPRIMER = 'supprimer';
+  const ARG_VUE_MESSAGE = 'message';
+  const ARG_VUE_MESSAGE_TITRE = 'titre_page';
 
   const ARG_VUE_DO_QUESTIONNAIRE_ETUDE_NAME = 'etude_name';
   const ARG_VUE_DO_QUESTIONNAIRE_ETUDE_FORM = 'etude_form';
@@ -90,8 +89,8 @@ class DefaultController extends Controller
     /**
       AFFICHER LA PAGE DE CRÉATION D'UN QUESTIONNAIRE
     **/
-    public function create_formAction(){
-      return $this->render(self::VUE_CREATE_FORM);
+    public function create_formAction($erreur=null,$titre=null){
+      return $this->render(self::VUE_CREATE_FORM,array('erreur' => $erreur, 'titre' => $titre));
     }
 
     /**
@@ -104,17 +103,31 @@ class DefaultController extends Controller
       if(! $request->isMethod('POST'))
         throw new NotFoundHttpException(self::ERROR_PAGE_INEXISTANTE);
 
-      $les_vars = $request->request->all();
-      $title_form = $les_vars['form_title'];        //on récupère le titre dans la variable POST
-      $string_score="";                             //on récupère les scores dans la variable POST
-      foreach($les_vars['scores'] as $key => $value){
-        if($key==sizeof($les_vars))
-          $string_score.="".$value;
-        else
-          $string_score.=$value.";";
+      $parameters = $request->request->all();
+      $title_form = $parameters['form_title'];        //on récupère le titre dans la variable POST
+
+      // On vérifie que le nom de l'étude n'est pas dejà utilisé
+      $m = $this->container->get(self::MONGO_DATABASE_CONNECTION);
+      $db = $m->selectDatabase(self::MONGO_DATABASE_NAME);
+      $collection = $db->selectCollection(self::COLLECTION_ETUDES);
+      $filter = array( self::CHAMP_TITRE_COLLECTION_ETUDES => $title_form);
+      $doc = $collection->findOne($filter);
+
+      if(!empty($doc)){ // si on trouve une étude du même nom
+        return $this->render(self::VUE_CREATE_FORM,array('erreur' => 'Ce nom d\'étude existe dejà', 'titre' => $title_form));
       }
-      return $this->render(self::VUE_FORM_BUILDER,array('scores'=>$string_score,'form_title'=>$title_form));
+
+      $string_score=""; //on récupère les scores dans la variable POST
+      if(isset($parameters['scores'])){
+        foreach($parameters['scores'] as $key => $value){
+          if($key==sizeof($parameters))
+            $string_score.="".$value;
+          else
+            $string_score.=$value.";";
+        }
     }
+    return $this->render(self::VUE_FORM_BUILDER,array('scores'=>$string_score,'form_title'=>$title_form));
+  }
 
     /**
       VALIDATION DE LA CRÉATION D'UNE ETUDE ET PERSISTENCE EN BASE DE DONNÉE DES
@@ -142,8 +155,10 @@ class DefaultController extends Controller
       // Ajout de l'étude dans la collection "etude" de la BDD
       $collection = $db->selectCollection(self::COLLECTION_ETUDES);
 
+      $titre = $request->request->get(self::PARAM_VUE_FORM_BUILDER_TITRE);
+
       $document = array();
-      $document[self::CHAMP_TITRE_COLLECTION_ETUDES]=$request->request->get(self::PARAM_VUE_FORM_BUILDER_TITRE);
+      $document[self::CHAMP_TITRE_COLLECTION_ETUDES]=$titre;
       $document[self::CHAMP_CREATEUR_COLLECTION_ETUDES]="a14de5d1dsd"; // ID du créateur de l'étude
       $collection->insert($document);
       $id_etude = new ObjectId($document[self::CHAMP_ID_COLLECTION_ETUDES]);
@@ -156,7 +171,8 @@ class DefaultController extends Controller
 
 
       // On informe l'utilisateur que l'ajout s'est bien déroulé
-      return new Response(" questionnaire enregistré. <a href='\'>retour</a>");
+      return $this->render(self::VUE_MESSAGE,array(self::ARG_VUE_MESSAGE => 'Votre étude a bien été enregistrée !',
+                                                   self::ARG_VUE_MESSAGE_TITRE => 'Enregistrement'.$titre));
     }
 
     /**
@@ -185,17 +201,7 @@ class DefaultController extends Controller
       return $this->render(self::VUE_LISTE_ETUDES,array(self::ARG_VUE_LISTE_ETUDES => $liste_etudes));
     }
 
-    /**
-      GÉRER LES ACTIONS DISPONIBLES POUR UNE ÉTUDE
-    **/
-    public function handleChoiceAction(Request $request){
-      /**
-      * Affichage d'un questionnaire. Blocage des fonction du formulaire.
-      * Il s'agit de simplement voir l'apparence du formulaire.
-      */
-      //verification de l'identité avant de continuer
-      //RIEN POUR LE MOMENT
-
+    public function deleteFormAction(Request $request){
       //on vérifie qu'il s'agit d'une méthode POST
       if(! $request->isMethod('POST'))
         throw new NotFoundHttpException(self::ERROR_PAGE_INEXISTANTE);
@@ -207,70 +213,81 @@ class DefaultController extends Controller
       //on récupère le questionnaire demandé
       $id_etude = new ObjectId($request->request->get(self::PARAM_VUE_LISTE_ETUDES_ID_ETUDE));
 
-      //ON REGARDE LA VALEUR DE LA VARIABLE 'mode', et on opère en fonction.
-      switch($request->request->get(self::PARAM_VUE_LISTE_ETUDES_MODE)){
-        //ON VEUT AFFICHER LES RÉPONSES DE L'ÉTUDE
-        case self::PARAM_VUE_LISTE_ETUDES_MODE_REPONSES:
-            //si on veut voir les réponses
-              //on récupère les réponses à cette étude.
-              $collection = $db->selectCollection(self::COLLECTION_REPONSES);
-              $filter = array( self::CHAMP_ID_ETUDE_COLLECTION_REPONSES => $id_etude );
-              $cursor = $collection->find($filter);
+      $collection = $db->selectCollection(self::COLLECTION_ETUDES);
+      $filter_etude = array( self::CHAMP_ID_COLLECTION_ETUDES => $id_etude );
+      $collection->findAndRemove($filter_etude);
 
-              $reponses = array();
-              while($cursor->hasNext()){
-                $reponses[] = $cursor->getNext();
-              }
+      $collection = $db->selectCollection(self::COLLECTION_REPONSES);
+      $filter_reponses = array( self::CHAMP_ID_ETUDE_COLLECTION_REPONSES => $id_etude );
+      $collection->remove($filter_reponses);
 
-              //si il n'y a pas de réponses on le dit.
-              if(sizeof($reponses)==0)
-                return new Response("Il n'y a pas de réponses à ce questionnaire pour le moment.");
+      $collection = $db->selectCollection(self::COLLECTION_QUESTIONS);
+      $filter_reponses = array( self::CHAMP_ID_ETUDE_COLLECTION_QUESTIONS => $id_etude );
+      $collection->remove($filter_reponses);
 
-              $score = $this->calculScore($reponses, $id_etude, $db);
+      return $this->render(self::VUE_MESSAGE,array(self::ARG_VUE_MESSAGE => 'L\'etude a bien été supprimée !',
+                                                   self::ARG_VUE_MESSAGE_TITRE => 'Succès'));
+    }
 
-              //on affiche la page avec le tableau de réponse
-              return new Response($score);
-            break;
-        //ON VEUT RÉPONDRE À L'ÉTUDE
-        case self::PARAM_VUE_LISTE_ETUDES_MODE_REPONDRE:
-            $collection = $db->selectCollection(self::COLLECTION_ETUDES);
+    public function answerFormAction(Request $request) {
+      //on vérifie qu'il s'agit d'une méthode POST
+      if(! $request->isMethod('POST'))
+        throw new NotFoundHttpException(self::ERROR_PAGE_INEXISTANTE);
 
-            $filter = array( self::CHAMP_ID_COLLECTION_ETUDES => $id_etude );
-            $etude = $collection->findOne($filter);
+      // On choisi la BDD
+      $m = $this->container->get(self::MONGO_DATABASE_CONNECTION);
+      $db = $m->selectDatabase(self::MONGO_DATABASE_NAME);
 
-            //si on veut y répondre
-              //on récupère le format html du questionnaire, et activé
-              $questionnaire = $this->fetchQuestionsToHtml($etude, true, $db);
-              //alors on ouvre le questionnaire afin de pouvoir y repondre
-              return $this->render(self::VUE_DO_QUESTIONNAIRE,
-                                   array(self::ARG_VUE_DO_QUESTIONNAIRE_ETUDE_NAME => $etude[self::CHAMP_TITRE_COLLECTION_ETUDES],
-                                         self::ARG_VUE_DO_QUESTIONNAIRE_ETUDE_FORM => $questionnaire
-                                         )
-                                  );
-            break;
-        //ON VEUT SUPPRIMER L'ÉTUDE
-        case self::PARAM_VUE_LISTE_ETUDES_MODE_SUPPRIMER:
+      //on récupère le questionnaire demandé
+      $id_etude = new ObjectId($request->request->get(self::PARAM_VUE_LISTE_ETUDES_ID_ETUDE));
 
-              $collection = $db->selectCollection(self::COLLECTION_ETUDES);
-              $filter_etude = array( self::CHAMP_ID_COLLECTION_ETUDES => $id_etude );
-              $collection->findAndRemove($filter_etude);
+      $collection = $db->selectCollection(self::COLLECTION_ETUDES);
 
-              $collection = $db->selectCollection(self::COLLECTION_REPONSES);
-              $filter_reponses = array( self::CHAMP_ID_ETUDE_COLLECTION_REPONSES => $id_etude );
-              $collection->remove($filter_reponses);
+      $filter = array( self::CHAMP_ID_COLLECTION_ETUDES => $id_etude );
+      $etude = $collection->findOne($filter);
 
-              $collection = $db->selectCollection(self::COLLECTION_QUESTIONS);
-              $filter_reponses = array( self::CHAMP_ID_ETUDE_COLLECTION_QUESTIONS => $id_etude );
-              $collection->remove($filter_reponses);
+      //si on veut y répondre
+        //on récupère le format html du questionnaire, et activé
+        $questionnaire = $this->fetchQuestionsToHtml($etude, true, $db);
+        //alors on ouvre le questionnaire afin de pouvoir y repondre
+        return $this->render(self::VUE_DO_QUESTIONNAIRE,
+                             array(self::ARG_VUE_DO_QUESTIONNAIRE_ETUDE_NAME => $etude[self::CHAMP_TITRE_COLLECTION_ETUDES],
+                                   self::ARG_VUE_DO_QUESTIONNAIRE_ETUDE_FORM => $questionnaire
+                                   )
+                            );
+    }
 
-              return new Response("L'etude a bien été supprimée. </br> <a href=\"\\etude\">Retour</a>");
-            break;
-        //CAS D'ÉCHEC
-        default:
-            throw new NotFoundHttpException(self::ERROR_PAGE_INEXISTANTE);
-            break;
+    public function checkResultsAction(Request $request){
+      //on vérifie qu'il s'agit d'une méthode POST
+      if(! $request->isMethod('POST'))
+        throw new NotFoundHttpException(self::ERROR_PAGE_INEXISTANTE);
+
+      // On choisi la BDD
+      $m = $this->container->get(self::MONGO_DATABASE_CONNECTION);
+      $db = $m->selectDatabase(self::MONGO_DATABASE_NAME);
+
+      //on récupère le questionnaire demandé
+      $id_etude = new ObjectId($request->request->get(self::PARAM_VUE_LISTE_ETUDES_ID_ETUDE));
+
+      $collection = $db->selectCollection(self::COLLECTION_REPONSES);
+      $filter = array( self::CHAMP_ID_ETUDE_COLLECTION_REPONSES => $id_etude );
+      $cursor = $collection->find($filter);
+
+      $reponses = array();
+      while($cursor->hasNext()){
+        $reponses[] = $cursor->getNext();
       }
-    }//fin function
+
+      //si il n'y a pas de réponses on le dit.
+      if(sizeof($reponses)==0)
+        return $this->render(self::VUE_MESSAGE,array(self::ARG_VUE_MESSAGE => 'Il n\'y a pas de réponses à ce questionnaire pour le moment',
+                                                     self::ARG_VUE_MESSAGE_TITRE => 'Consulter les réponses'));
+
+      $score = $this->calculScore($reponses, $id_etude, $db);
+
+      //on affiche la page avec le tableau de réponse
+      return new Response($score);
+    }
 
     /**
       PERSISTENCE DES RÉPONSES D'UNE ETUDE
@@ -293,7 +310,9 @@ class DefaultController extends Controller
       $reponses[self::CHAMP_ID_ETUDE_COLLECTION_REPONSES] = new ObjectId($reponses[self::CHAMP_ID_ETUDE_COLLECTION_REPONSES]);
 
       $collection->insert($reponses);
-      return new Response('réponses enregistrés <a href="\etude"> retour à la liste.</a>');
+      return $this->render(self::VUE_MESSAGE,array(self::ARG_VUE_MESSAGE => 'Vos réponses ont bien été enregistrées !',
+                                                   self::ARG_VUE_MESSAGE_TITRE => 'Succès !'));
+
     }//fin function
 
 

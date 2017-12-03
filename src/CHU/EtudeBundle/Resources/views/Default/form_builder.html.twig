@@ -1,4 +1,4 @@
-<div id="mainHolder" class="container">
+<div id="mainHolder">
     <div class="row">
         <!-- Source -->
         <div id="componentHolder" class="col-lg-6 col-sm-12">
@@ -94,6 +94,7 @@
           <input id="titre" name="titre" type="hidden" value="{{form_title}}">
           <input id="scores" name="scores" type="hidden" value="{{scores}}">
           <button type="submit" class="btn btn-success">Créer</button>
+          <a id="cancelButton" href="{{ path('chu_etude_show_etudes')}}" class="btn btn-primary">Annuler</a>
         </form>
       </div>
     </div>
