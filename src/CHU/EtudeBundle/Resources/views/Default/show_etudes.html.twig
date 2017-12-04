@@ -13,10 +13,11 @@ Resultats
 
 {% block body_bundle %}
 
-<h1>Vos questionnaires : </h1>
-
 	<div id="liste_etudes">
-		{% if not liste_etudes is null %}
+		<h1>Vos questionnaires</h1>
+		{% if liste_etudes|length == 0 %}
+			<p>Vous n'avez aucune étude pour le moment</p>
+		{% else %}
 		<table>
 			{% for etude in liste_etudes %}
 				<tr>
@@ -36,16 +37,14 @@ Resultats
 					<td>
 						<form method="post" action="{{ path('chu_etude_delete_form')}}">
 							<input type="hidden" name="id_etude" value="{{etude._id}}">
-							<button type="submit" class="btn btn-danger">x</button>
+							<button id="suppr_etude_button" type="submit" class="btn btn-danger">X</button>
 						</form>
 					</td>
 				</tr>
 			{% endfor %}
 		</table>
-		{% else %}
-		<p>Vous n'avez aucune étude pour le moment</p>
 		{% endif %}
+		<a id="cancelButton" href="{{ path('chu_homepage')}}" class="btn btn-primary">Retour à l'accueil</a>
 	</div>
 	<br/>
-  <a id="cancelButton" href="{{ path('chu_homepage')}}" class="btn btn-primary">Retour à l'accueil</a>
 {% endblock %}

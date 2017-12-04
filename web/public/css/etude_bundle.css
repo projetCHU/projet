@@ -2,8 +2,33 @@
   LA FEUILLE DE STYLE POUR LE BUNDLE ETUDE.
 **/
 
+h1 {
+  border-bottom: solid;
+}
+
 #buttonAddRow{
   font-size: 15px;
+}
+
+#message {
+  background-color: #F0F0F0;
+  padding:5%;
+  text-align: center;
+  margin-top: 10%;
+  margin-bottom: 5%;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  box-shadow: 1px 1px 3px rgba(0,0,0,.4);
+}
+
+#create_form {
+  margin-left: 10%;
+  margin-right: 10%;
+  margin-top: 10%
+}
+
+#create_form #form {
+  margin-top : 10%
 }
 
 #etude_content {
@@ -22,12 +47,24 @@
   margin-right: 5%;
 }
 
+#liste_etudes {
+  margin-left: 10%;
+  margin-right : 10%
+}
+
+#liste_etudes table{
+  font-size: 20px;
+  margin-right : 20%;
+  margin-left : 20%;
+  margin-top : 10%;
+  margin-bottom: 10%;
+}
+
 #liste_etudes th, td {
     border-bottom: 1px solid #ddd;
 }
 
-#liste_etudes .btn-danger {
-  margin: auto;
-  margin-top: 10px;
-  margin-bottom: 10px;
+#liste_etudes #suppr_etude_button {
+  margin-bottom: 15%;
+  margin-top : 15%;
 }

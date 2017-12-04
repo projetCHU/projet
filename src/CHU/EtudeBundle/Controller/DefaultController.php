@@ -172,7 +172,7 @@ class DefaultController extends Controller
 
       // On informe l'utilisateur que l'ajout s'est bien déroulé
       return $this->render(self::VUE_MESSAGE,array(self::ARG_VUE_MESSAGE => 'Votre étude a bien été enregistrée !',
-                                                   self::ARG_VUE_MESSAGE_TITRE => 'Enregistrement'.$titre));
+                                                   self::ARG_VUE_MESSAGE_TITRE => 'Enregistrement : '.$titre));
     }
 
     /**
@@ -225,7 +225,7 @@ class DefaultController extends Controller
       $filter_reponses = array( self::CHAMP_ID_ETUDE_COLLECTION_QUESTIONS => $id_etude );
       $collection->remove($filter_reponses);
 
-      return $this->render(self::VUE_MESSAGE,array(self::ARG_VUE_MESSAGE => 'L\'etude a bien été supprimée !',
+      return $this->render(self::VUE_MESSAGE,array(self::ARG_VUE_MESSAGE => 'L\'étude a bien été supprimée !',
                                                    self::ARG_VUE_MESSAGE_TITRE => 'Succès'));
     }
 

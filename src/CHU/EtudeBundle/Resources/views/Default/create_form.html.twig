@@ -10,14 +10,11 @@
 
 {% block body_bundle %}
 
-<br/>
-<br/>
-<br/>
-<h1 style="border-bottom: solid"> Création d'un questionnaire</h1>
-<br/>
-<br/>
-<br/>
 
+
+    <div id="create_form">
+    <h1> Création d'un questionnaire</h1>
+    <div id="form">
     <form method="post" action= "{{path('chu_etude_build_form')}}">
     <div id="form_name">
       <p>Nom du questionnaire :</p>
@@ -32,8 +29,8 @@
     <div  type="option-multiple" id="div_choix_scores">
       <p>Score(s) utilisé(s) pour le questionnaire :</p>
       <p>
-        <input id="checkBox" type="checkbox" name='scores[]' value="MS">MS &nbsp;
-        <input id="checkBox" type="checkbox" name='scores[]' value="Rachis">Rachis
+        <input id="checkBox" type="checkbox" name='scores[]' value="MS">&nbsp; MS &nbsp;
+        <input id="checkBox" type="checkbox" name='scores[]' value="Rachis">&nbsp; Rachis &nbsp;
       </p>
     </div>
 
@@ -43,6 +40,8 @@
     <a id="cancelButton" href="{{ path('chu_homepage')}}" class="btn btn-primary">Retour</a>
 
 </form>
+</div>
+</div>
 
 {% endblock %}
 

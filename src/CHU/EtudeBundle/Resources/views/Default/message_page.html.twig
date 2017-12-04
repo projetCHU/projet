@@ -12,6 +12,8 @@
 {% endblock %}
 
 {% block body_bundle %}
-  <h2>{{message}}</h2>
+  <div id="message">
+    <h2>{{message}}</h2>
+  </div>
   <a id="cancelButton" href="{{ path('chu_homepage')}}" class="btn btn-primary">Retour à l'accueil</a>
 {% endblock %}
