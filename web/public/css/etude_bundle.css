@@ -52,7 +52,7 @@ h1 {
   margin-right : 10%
 }
 
-#liste_etudes table{
+#liste_etudes #table_etudes{
   font-size: 20px;
   margin-right : 20%;
   margin-left : 20%;

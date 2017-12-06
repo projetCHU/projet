@@ -16,8 +16,11 @@ Resultats
 	<div id="liste_etudes">
 		<h1>Vos questionnaires</h1>
 		{% if liste_etudes|length == 0 %}
+		<div id="table_etudes">
 			<p>Vous n'avez aucune étude pour le moment</p>
+		</div>
 		{% else %}
+		<div id="table_etudes">
 		<table>
 			{% for etude in liste_etudes %}
 				<tr>
@@ -43,6 +46,7 @@ Resultats
 				</tr>
 			{% endfor %}
 		</table>
+		</div>
 		{% endif %}
 		<a id="cancelButton" href="{{ path('chu_homepage')}}" class="btn btn-primary">Retour à l'accueil</a>
 	</div>
