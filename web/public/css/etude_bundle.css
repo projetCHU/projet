@@ -42,6 +42,11 @@ h1 {
   box-shadow: 1px 1px 3px rgba(0,0,0,.4);
 }
 
+#componentInfoText {
+  font-style: italic;
+  font-size: 14px;
+}
+
 #form_name {
   float:left;
   margin-right: 5%;
@@ -67,4 +72,9 @@ h1 {
 #liste_etudes #suppr_etude_button {
   margin-bottom: 15%;
   margin-top : 15%;
+  padding : 6% 60%;
+}
+
+.tab_cell_score {
+  width:30px;
 }
