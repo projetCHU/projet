@@ -63,7 +63,7 @@ doctrine:
 doctrine_mongodb:
     connections:
         default:
-            server: "%mongodb_server%"
+            server: mongodb://localhost:27017
             options: {}
     default_database: test_database
     document_managers:

@@ -283,10 +283,13 @@ class DefaultController extends Controller
         return $this->render(self::VUE_MESSAGE,array(self::ARG_VUE_MESSAGE => 'Il n\'y a pas de réponses à ce questionnaire pour le moment',
                                                      self::ARG_VUE_MESSAGE_TITRE => 'Consulter les réponses'));
 
-      $score = $this->calculScore($reponses, $id_etude, $db);
+      $scores = $this->calculScore($reponses, $id_etude, $db);
+      $results = array('Jamais' => 100, 'Souvent' => 50, 'Rarement' => 68, 'Toujours' => 29);
+
+      //return new Response($scores);
 
       //on affiche la page avec le tableau de réponse
-      return new Response($score);
+      return $this->render(self::VUE_SHOW_REPONSES,array('scores' => $scores, 'results' => $results));
     }
 
     /**
@@ -365,6 +368,7 @@ class DefaultController extends Controller
           case 'text'://on attend un champ texte.
             //rien à ajouter.
             break;
+
           case 'textarea':
             //rien à ajouter.
             break;
@@ -379,7 +383,6 @@ class DefaultController extends Controller
               foreach($label_scores as $indice => $label_score){
                 $label_reponse[$label_score] = (int)$value_scores[$indice];
               }
-
               $label_reponses[] = $label_reponse;
             }
             break;
@@ -569,6 +572,6 @@ class DefaultController extends Controller
         }
       }
 
-      return json_encode($score);
+      return $score;
   }
 }
