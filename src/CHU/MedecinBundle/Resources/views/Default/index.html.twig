@@ -1,0 +1,13 @@
+{% extends 'CHUAdministartionBundle:Default:index.html.twig'%}
+
+{%block lien%} 
+<li><a  href="{{path('creer_compte_medecin')}}">creer compte</a></li> 
+{% endblock %}
+ {% block menu %}
+       <li><a href="{{path('afficher_etudes_medecin')}}"><span class="glyphicon glyphicon-lock"></span> afficher les études </a></li> 
+       <li><a href="{{path('afficher_patients_medecin')}}"><span class="glyphicon glyphicon-lock"></span> Afficher les patient  </a></li>
+        <li><a href="{{path('ajouter_patient_medecin')}}"><span class="glyphicon glyphicon-lock"></span> Ajouter un patient </a></li>
+       <li><a href="{{path('affecter_etude_medecin')}}"><span class="glyphicon glyphicon-lock"></span> Affecter une étude à un patient </a></li>
+        <li><a href="#"><span class="glyphicon glyphicon-lock"></span> céerr une étude </a></li>
+        
+    {% endblock  %}

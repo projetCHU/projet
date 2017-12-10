@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+    <head>
+       <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+        
+        <title>{% block title %}Accueil{% endblock %}</title>
+  
+    <link rel="stylesheet"  href="{{asset('public/css/style.css')}}">
+        
+    <link rel="stylesheet"  href="{{asset('public/css/bootstrap.min.css')}}">
+       {% block stylesheets %} {% endblock stylesheets %}
+        
+    </head>
+
+    
+    <body>
+        {% block corps %}
+        <div class="row affix-row" >
+    <div class="col-sm-3 col-md-2 affix-sidebar">
+		<div class="sidebar-nav">
+  <div class="navbar navbar-default" role="navigation">
+  
+    <div class="navbar-collapse collapse sidebar-navbar-collapse">
+ <br>   
+        <ul class="nav navbar-nav" id="sidenav01">
+<div>
+<table cellspacing="10">
+<tr>
+<td>
+<img style="margin-left: 10px; float:left; width: 130px;" src="public/fonts/logo.jpg"  height="100" />
+</td>
+<td>
+<img style="margin-left: 50px; float:left; width: 100px;"src="public/fonts/logo-chu.png"  height="100" />
+</td>
+</table>
+
+</div>
+<br><br>
+
+        
+        
+        <li >
+          <a href="#" data-toggle="collapse" data-target="#toggleDemo0" data-parent="#sidenav01" class="collapsed">
+          <h4>
+          Menu
+          <br>
+        
+          </h4>
+          </a>
+        
+        </li>
+        <li>
+          <a href="#" data-toggle="collapse" data-target="#toggleDemo" data-parent="#sidenav01" class="collapsed">
+          <span class="glyphicon glyphicon-user"></span> Connexion 
+          </a>
+          <div class="collapse" id="toggleDemo" style="height: 0px;">
+            <ul class="nav nav-list">
+            
+                <li><a href="{{path('fos_user_security_login')}}">Se connecter</a></li>
+              <li><a href="{{path('registration')}}">Première connexion</a></li>
+           
+            </ul>
+          </div>
+        </li>
+       
+        <li><a href="#"><span class="glyphicon glyphicon-lock"></span> Projet</a></li>
+        <li><a href="#"><span class="glyphicon glyphicon-envelope"></span> contact</a></li>
+
+      </ul>
+      
+      </div><!--/.nav-collapse -->
+    </div>
+  </div>
+	</div>
+
+             
+      
+	<div class="col-sm-9 col-md-10 affix-content">
+   
+        
+{% block body %}
+{% endblock body %}
+		<!--<div class="container">
+			
+				<div class="page-header">
+	<h3><span class="glyphicon glyphicon-th-list"></span> Navigation</h3>
+</div>-->
+
+            
+		</div>
+	</div>
+
+<script src="public/jquery/jquery.min.js"></script>
+<script src="public/js/bootstrap.min.js"></script>
+         {% endblock corps %}  
+  
+</body>
+   
+     
+	<!--footer-->
+	<footer id="footer">
+		
+						
+                        <div class="credits">
+                            <!-- 
+                               Designed by Université d'Angers 
+                            -->
+                           
+                            
+                 
+		</div>
+	</footer>
+	<!--/ footer-->
+   
+</html>

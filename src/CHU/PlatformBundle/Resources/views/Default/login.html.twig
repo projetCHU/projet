@@ -1,0 +1,39 @@
+{% extends 'base.html.twig'%}
+
+{% block title %}Login{% endblock %}
+ {% block stylesheets %} 
+<link rel="stylesheet" href="{{asset('public/css/font-awesome.min.css')}}">
+<link rel="stylesheet"  href="{{asset('public/css/log.css')}}" />
+<script type="text/javascript"></script>
+ {% endblock stylesheets %}
+
+
+
+
+
+{% block body %}
+<div class="col-sm-9 col-md-10 affix-content">
+<div class="container">
+	<section id="content">
+		<h1>Se connecter</h1>
+		<form  action="{{ path('post_connexion') }}" method="post">
+			<div class="wrapper">
+				<i class="fa fa-user"></i>
+				<input type="text" placeholder="nom d'utilisateur" name="usr" required/>
+			</div>
+			<div class="wrapper">
+				<i class="fa fa-lock"></i>
+				<input type="password" placeholder="mot de passe"  name="pass" required/>
+			</div> 
+			<div>
+				<input type="submit" value="Se connecter"/>
+			</div>
+			<div>
+				<a href="{{ path('registration') }}" style="float:left;">S'enregistrer</a>
+				<a href="{{ path('passowrd_forget') }}" style="float:right;">Mot de passe oublié?</a>
+			</div>
+		</form>
+	</section>
+</div>
+{% endblock body %}
+

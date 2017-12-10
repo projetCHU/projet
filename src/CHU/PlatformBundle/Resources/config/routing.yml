@@ -1,0 +1,29 @@
+chu_platform_homepage:
+    path:     /
+    defaults: { _controller: CHUPlatformBundle:Default:index }
+   
+login:
+    path:     /login5
+    defaults: { _controller: CHUPlatformBundle:Default:login }
+    
+passowrd_forget:
+    path:     /mot_de_passe_oublie
+    defaults: { _controller: CHUPlatformBundle:Default:passOublier }
+    
+registration:
+    path:     /register/
+    defaults: { _controller: CHUPlatformBundle:Default:enregistrement }
+
+valider_inscription:
+    path:     /valider_inscription
+    defaults: { _controller: CHUPlatformBundle:Default:validerIscription }
+
+
+
+post_connexion:
+    path:     /post_connexion
+    defaults: { _controller: CHUPlatformBundle:Default:postConnexion }
+    
+    
+    
+

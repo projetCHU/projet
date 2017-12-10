@@ -1,0 +1,34 @@
+{% extends 'base.html.twig'%}
+{% block body %}
+{% endblock body %}
+ {% block liste %}
+        <li >
+          <a href="#" data-toggle="collapse" data-target="#toggleDemo0" data-parent="#sidenav01" class="collapsed">
+          <h4>
+          Menu
+          <br>
+        
+          </h4>
+          </a>
+        
+        </li>
+        <li>
+          <a href="#" data-toggle="collapse" data-target="#toggleDemo" data-parent="#sidenav01" class="collapsed">
+          <span class="glyphicon glyphicon-user"></span> {{ app.user.username }}
+          </a>
+          <div class="collapse" id="toggleDemo" style="height: 0px;">
+            <ul class="nav nav-list">
+            
+                <li><a href="{{path('fos_user_security_logout')}}">Se deconnecter</a></li>
+         {%block lien %}     
+                <li><a  href="{{path('creer_compte')}}">creer compte</a></li> 
+           {%endblock%}
+            </ul>
+          </div>
+        </li>
+      {% block menu %}
+
+        <li><a href="#"><span class="glyphicon glyphicon-lock"></span> céerr une étude </a></li>
+        <li><a href="{{path('afficher_etudes')}}"><span class="glyphicon glyphicon-lock"></span> afficher les études </a></li>
+    {% endblock  %}
+    {% endblock%}

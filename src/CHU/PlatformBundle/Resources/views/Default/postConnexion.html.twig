@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+  <link rel="stylesheet" href="{{asset('public/css/style.css')}}">
+ <link rel="stylesheet"  href="{{asset('public/css/bootstrap.min.css')}}">
+</head>
+<body>
+
+
+<div class="row affix-row">
+    <div class="col-sm-3 col-md-2 affix-sidebar">
+		<div class="sidebar-nav">
+  <div class="navbar navbar-default" role="navigation">
+    <div class="navbar-header">
+      
+      <span class="visible-xs navbar-brand">Sidebar menu</span>
+    </div>
+    <div class="navbar-collapse collapse sidebar-navbar-collapse">
+ <br>     <ul class="nav navbar-nav" id="sidenav01">
+<div>
+<table cellspacing="10">
+<tr>
+<td>
+<img style="margin-left: 10px; float:left; width: 130px;" src="public/fonts/logo.jpg"  height="100" />
+</td>
+<td>
+<img style="margin-left: 50px; float:left; width: 100px;"src="public/fonts/logo-chu.png"  height="100" />
+</td>
+</table>
+
+</div>
+<br><br>
+
+
+        <li class="active">
+          <a href="#" data-toggle="collapse" data-target="#toggleDemo0" data-parent="#sidenav01" class="collapsed">
+          <h4>
+          Menu
+          <br>
+        
+          </h4>
+          </a>
+        
+        </li>
+        <li>
+          <a href="#" data-toggle="collapse" data-target="#toggleDemo" data-parent="#sidenav01" class="collapsed">
+          <span class="glyphicon glyphicon-user"></span> utilisateur <span class="caret pull-right"></span>
+          </a>
+          <div class="collapse" id="toggleDemo" style="height: 0px;">
+            <ul class="nav nav-list">
+              <li><a href="{{ path('chu_platform_homepage')}}">Se deconnecter</a></li>
+              <li><a href="{{ path('creer_compte')}}">créer compte</a></li>
+	      <li><a href="#">créer questionnaire</a></li>
+           
+            </ul>
+          </div>
+        </li>
+       
+        <li><a href="#"><span class="glyphicon glyphicon-lock"></span> Projet</a></li>
+        <li><a href="#"><span class="glyphicon glyphicon-envelope"></span> contact <span class="badge pull-right">42</span></a></li>
+        
+      </ul>
+      </div><!--/.nav-collapse -->
+    </div>
+  </div>
+	</div>
+	<div class="col-sm-9 col-md-10 affix-content">
+		<div class="container">
+			
+				<div class="page-header">
+	
+</div>
+
+			
+		</div>
+	</div>
+</div>
+<script src="public/jquery/jquery.min.js"></script>
+<script src="public/js/bootstrap.min.js"></script>
+</body>
+</html>
