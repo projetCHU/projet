@@ -36,7 +36,8 @@ h1 {
   margin: auto;
   padding: 0% 5%;
   position: absolute;
-  top: 0; left: 20%; bottom: 0%; right: 20%;
+  left: 20%;
+  right: 20%;
   border: 1px solid #eee;
   border-radius: 6px;
   box-shadow: 1px 1px 3px rgba(0,0,0,.4);
@@ -77,4 +78,21 @@ h1 {
 
 .tab_cell_score {
   width:30px;
+}
+
+
+.FormSection {
+  border-bottom : solid;
+  border-width : 1px;
+  border-bottom : 1;
+  margin : 0% 5%;
+}
+
+.FormSectionText {
+  font-size : 15px;
+  font-style : italic;
+}
+
+.DataConstraints {
+  width : 70px;
 }
