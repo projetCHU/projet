@@ -4,6 +4,22 @@
 	 background-image: url(/public/img/bg-banner.jpg);
 }
 
+.erreur {
+  color: red;
+}
+
+#page {
+	font-family: 'Open Sans', sans-serif;
+	line-height: 20px;
+	/*background-color: #FFFFFF;*/
+  background-color: #C0CCD2;
+	font-size: 300;
+	font-size: 16px;
+  margin: auto;
+  position: absolute;
+  top: 0%; left: 0%; bottom: 0%; right: 0%;
+  background-image:url(/public/img/bg-banner.jpg);
+
 @media (min-width: 768px){
   .affix-content .container {
     width: 700px;
