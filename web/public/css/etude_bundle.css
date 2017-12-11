@@ -36,8 +36,8 @@ h1 {
   margin: auto;
   padding: 0% 5%;
   position: absolute;
-  left: 20%;
-  right: 20%;
+  left: 10%;
+  right: 10%;
   border: 1px solid #eee;
   border-radius: 6px;
   box-shadow: 1px 1px 3px rgba(0,0,0,.4);
@@ -81,10 +81,21 @@ h1 {
   padding : 2px 8px;
 }
 
+#componentHolder{
+  width:30%;
+}
+
+#formVisualizer{
+  width:65%;
+}
+
 .tab_cell_score {
   width:30px;
 }
 
+.tab_cell_rep {
+  width: 190px;
+}
 
 .FormSection {
   border-bottom : solid;

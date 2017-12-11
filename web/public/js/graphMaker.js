@@ -34,8 +34,8 @@ function DrawAllCharts(){
       else if($typeGraph=="column"){                            //le type de graphique est column, diagramme en baton
         google.charts.setOnLoadCallback(drawChartColumn(DivQuest,Tab_for_graph));
       }
-      else if($typeGraph=="donut"){                             //le type de graphique est donut, camembert.
-        google.charts.setOnLoadCallback(drawChartDonut(DivQuest,Tab_for_graph));
+      else if($typeGraph=="horizontal" || $typeGraph=="donut"){                             //le type de graphique est horizontal
+        google.charts.setOnLoadCallback(drawCharthorizontal(DivQuest,Tab_for_graph));
       }
 
       $(DivQuest).prepend('<li>Réponse participant : à définir.</li><br/>');//la reponses à la question du participant
@@ -59,19 +59,32 @@ function drawChartColumn(LaBonneDiv,ArrayValue) {
 		legend: { position: "none" },
 	};
 	var chart = new google.visualization.ColumnChart(LaBonneDiv);
+  //var chart = new google.visualization.BarChart(LaBonneDiv);
 	chart.draw(data, options);
 };
 /**
   Dessine un diagramme en camembert dans la div 'LaBonneDiv' à parti du tableau de données 'ArrayValue'
 **/
-function drawChartDonut(LaBonneDiv,ArrayValue) {
-	// Create the data table.
-	var data = new google.visualization.DataTable();
-	data.addColumn('string', 'Réponses');
-	data.addColumn('number', 'Valeurs');
+function drawCharthorizontal(LaBonneDiv,ArrayValue) {
+  //console.log(ArrayValue);
+  var column = [];
+  var row = [];
+  $.each(ArrayValue,function(i){
+    column.push(ArrayValue[i][0]);
+    row.push(ArrayValue[i][1]);
+  });
+  var ArrayData = [];
+  ArrayData.push(column);
+  ArrayData.push(row);
+  console.log('####################"');
+  console.log(ArrayData);
 
-	data.addRows(ArrayValue);
+  //console.log(ArrayData);
+
+	// Create the data table.
+	var data = new google.visualization.arrayToDataTable(ArrayData);
 	// Set chart options
+  /*
 	var options = {
 								 'pieHole':0.4,
 								 'legend': 'none',
@@ -80,9 +93,23 @@ function drawChartDonut(LaBonneDiv,ArrayValue) {
 								 'height':500,
 								 'slices': [{color: '#B9121B'}, {color: '#DBEA01'}, {color: 'orange'}, {color: 'green'}]
 							 };
-	// Instantiate and draw our chart, passing in some options.
+
+	//Instantiate and draw our chart, passing in some options.
 	var chart = new google.visualization.PieChart(LaBonneDiv);
-	chart.draw(data, options);
+  /*/
+  var options_fullStacked = {
+        width: 600,
+        height: 200,
+        legend: { position: 'top', maxLines: 1 },
+        bar: { groupWidth: '95%'},
+        hAxis:{
+          minValue: 0
+        },
+        isStacked: 'percent'
+      };
+  var chart = new google.visualization.BarChart(LaBonneDiv);
+  //*/
+	chart.draw(data, options_fullStacked);
 };
 
 

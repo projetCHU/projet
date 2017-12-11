@@ -1425,7 +1425,7 @@ var FormBuilder = function ($) {
           //remplir la liste des graph disponible
           var $singleSelect = $('<select id="'+id+'" name="'+id+'" class="form-control"></select>');
           $singleSelect.append('<option value="NONE" selected="true">Aucun</option>');
-          $singleSelect.append('<option value="donut">Camembert</option>');
+          $singleSelect.append('<option value="horizontal">Horizontal</option>');
           $singleSelect.append('<option value="column">Bâtons</option>');
           $createSelectBoxGraphSelection.find('.col-sm-7').append($singleSelect);
           return $createSelectBoxGraphSelection;
