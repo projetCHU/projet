@@ -1,0 +1,18 @@
+chu_administartion_homepage:
+    path:     /
+    defaults: { _controller: CHUAdministartionBundle:Default:index }
+
+
+creer_compte:
+    path:     /creer_compte
+    defaults: { _controller: CHUAdministartionBundle:Default:creerCompte }
+
+
+    
+
+afficher_etudes:
+    path:     /afficher_etudes
+    defaults: { _controller: CHUAdministartionBundle:Default:afficherEtudes }
+    
+
+    

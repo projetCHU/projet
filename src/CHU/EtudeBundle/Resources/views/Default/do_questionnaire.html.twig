@@ -3,7 +3,7 @@
 {% extends "CHUEtudeBundle::layoutBundle.html.twig" %}
 
 {% block stylesheets %}
-	<!--<link rel="stylesheet" type="text/css" href="{{asset('public/css/enregistrement.css')}}">-->
+	{{parent()}}
 {% endblock %}
 
 {% block title %}
@@ -23,14 +23,14 @@
         {% else %}
           <form class="form-horizontal area" method="post" action="{{path('chu_etude_questionnaire_repondu')}}">
           {{ etude_form | raw }}
-          <input type="submit"/>
+          <input type="submit" class="btn btn-success"/>
+          &nbsp;<a id="cancelButton" href="{{ path('chu_homepage')}}" class="btn btn-primary">Retour à l'accueil</a>
         {% endif %}
       {% else %}
         <form class="form-horizontal area" method="post" action="{{path('chu_etude_questionnaire_repondu')}}">
         {{ etude_form | raw }}
-        <input type="submit"/>
+        <input type="submit" class="btn btn-success"/>
+        &nbsp;<a id="cancelButton" href="{{ path('chu_homepage')}}" class="btn btn-primary">Retour à l'accueil</a>
       {% endif %}
     </form>
-
-<a href="{{path('chu__homepage')}}">Retour à l'accueil.</a>
 {% endblock %}

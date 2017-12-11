@@ -2,6 +2,25 @@ chu_etude:
     resource: "@CHUEtudeBundle/Resources/config/routing.yml"
     prefix:   /etude
 
-chu_ugestion_utilisateur:
-    resource: "@CHUgestionUtilisateurBundle/Resources/config/routing.yml"
+chu_patient:
+    resource: "@CHUPatientBundle/Resources/config/routing.yml"
+    prefix:   /patient
+
+chu_infirmier:
+    resource: "@CHUInfirmierBundle/Resources/config/routing.yml"
+    prefix:   /infirmier
+
+chu_medecin:
+    resource: "@CHUMedecinBundle/Resources/config/routing.yml"
+    prefix:   /medecin
+
+chu_administartion:
+    resource: "@CHUAdministartionBundle/Resources/config/routing.yml"
+    prefix:   /admin
+
+chu_platform:
+    resource: "@CHUPlatformBundle/Resources/config/routing.yml"
     prefix:   /
+
+fos_user:
+    resource: "@FOSUserBundle/Resources/config/routing/all.xml"

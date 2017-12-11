@@ -18,29 +18,9 @@
     <script type="text/javascript"></script>
     </head>
     <body>
-        {% block body %}{% endblock %}
-
-
-	<!--footer-->
-	<footer id="footer">
-		<div class="bottom-footer">
-
-		</div>
-		<div class="footer-line">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-12 text-center">
-
-                        <div class="credits">
-
-
-                        </div>
-					</div>
-				</div>
-			</div>
-		</div>
-	</footer>
-	<!--/ footer-->
+        <div id="page">
+          {% block body %}{% endblock %}
+        </div>
 
     <script src="{{asset('public/js/jquery.js')}}"></script>
     <script src="{{asset('public/js/bootstrap.js')}}"></script>

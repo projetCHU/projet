@@ -1,0 +1,77 @@
+{% extends 'CHUAdministartionBundle:Default:index.html.twig'%}
+{% block script %}
+
+
+
+
+
+{% endblock %}
+
+ {% block stylesheets %}
+    <link rel="stylesheet" href="{{asset('/public/css/creerCompte.css')}}">
+{% endblock  %}
+
+{% block body %}
+
+   <div class="container">
+    {% if error is defined  %}   
+       <div class="alert alert-danger">
+            {{ error }}
+        </div>
+       {% endif %}
+       
+       {% if mail is defined  %}   
+       <div class="alert alert-success">
+            {{ mail }}
+        </div>
+       {% endif %}
+ {% if code is defined  %}
+  <div class="page-header">{{ code }}</div>      
+
+ {% else %}
+  <div class="page-header"></div>
+  <div id="signup-form" style="float:left;">
+   {% block form %}
+    <form  action= "{{ path('creer_compte')}}"  method="post">
+    <p>
+     <label >Type de compte</label>
+       <select id="select" style="width:250px" name="role" onChange="THEFUNCTION(this.selectedIndex);">
+      <option value="ROLE_MEDECIN" >Medecin</option>
+      <option value="ROLE_SALARIE" >Salarie</option>   
+     </select>
+      
+        <br><br>
+        </p>
+        <div  id="email"> 
+            <textarea id="adresseemail" type="email" name="_email" placeholder="E-mail par ligne" ></textarea>
+        </div>
+        
+        <br>
+    <p>
+     <button id="submit" type="submit">S'enregister</button>
+    </p> 
+        
+        
+        <script type="text/javascript">
+            function THEFUNCTION(i){
+                var email = document.getElementById("email");
+                switch(i){
+                    case 0: email.style.display='';break;
+                    default: email.style.display='none';break;
+                }
+            }
+    
+    
+</script>
+        
+        
+        
+   </form>
+      {%endblock%}
+  </div>
+ {% endif %}
+</div>
+
+{%endblock%}
+
+

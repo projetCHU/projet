@@ -15,9 +15,14 @@ class AppKernel extends Kernel
             new Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
             new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
-            new CHU\gestionUtilisateurBundle\CHUgestionUtilisateurBundle(),
             new CHU\EtudeBundle\CHUEtudeBundle(),
-	          new Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle()
+            new CHU\PlatformBundle\CHUPlatformBundle(),
+            new FOS\UserBundle\FOSUserBundle(),
+            new CHU\AdministartionBundle\CHUAdministartionBundle(),
+            new CHU\MedecinBundle\CHUMedecinBundle(),
+            new CHU\InfirmierBundle\CHUInfirmierBundle(),
+            new CHU\PatientBundle\CHUPatientBundle(),
+	    new Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle()
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {

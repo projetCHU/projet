@@ -1,0 +1,35 @@
+{% trans_default_domain 'FOSUserBundle' %}
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Login</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet"  href="{{asset('public/css/log.css')}}" />
+<script type="text/javascript"></script>
+</head>
+
+
+
+<body >
+
+<div class="container">
+	<section id="content">
+		<h1> Mot de passe oublié?</h1>
+		<form action="{{ path('fos_user_resetting_send_email') }}" method="POST" class="fos_user_resetting_request">
+			<div class="wrapper">
+				<i class="fa fa-user"></i>
+				<input type="text" placeholder="{{ 'resetting.request.username'|trans }}" name="username"  required />
+			</div>
+			
+			<div>
+				 <input type="submit" value="{{ 'resetting.request.submit'|trans }}" style="width: 300px;" />
+			</div>
+			
+		</form>
+	</section>
+</div>
+
+</body>
+</html>

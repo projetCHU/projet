@@ -7,16 +7,106 @@ Questionnaire
 {% endblock %}
 
 {% block stylesheets %}
-	<link rel="stylesheet" type="text/css" href="{{asset('public/css/enregistrement.css')}}">
-	<link rel="stylesheet" type="text/css" href="{{asset('public/css/etude_bundle.css')}}">
+	{{ parent() }}
+	<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+	<script type="text/javascript">
+    google.charts.load("current", {packages:['corechart']});
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+      var data = google.visualization.arrayToDataTable([
+        ["Score", "Pourcentage", { role: "style" } ],
+				["-1", 8.94, "green"],
+				["0", 10.49, "green"],
+				["1", 19.30, "green"],
+				["2", 21.45, "blue"],
+				["3", 8.94, "blue"],
+				["4", 10.49, "blue"],
+				["5", 19.30, "blue"],
+				["6", 21.45, "blue"],
+				["7", 8.94, "blue"],
+				["8", 10.49, "blue"],
+				["9", 19.30, "blue"],
+				["10", 21.45, "blue"],
+				["11", 8.94, "blue"],
+				["12", 10.49, "blue"],
+				["13", 19.30, "blue"],
+				["14", 21.45, "blue"],
+				["15", 8.94, "blue"]
+      ]);
+
+      var view = new google.visualization.DataView(data);
+      view.setColumns([0, 1,
+                       { calc: "stringify",
+                         sourceColumn: 1,
+                         type: "string",
+                         role: "annotation" },
+                       2]);
+
+      var options = {
+        title: "Scores de la population de référence",
+        width: 600,
+        height: 400,
+        bar: {groupWidth: "50%"},
+        legend: { position: "none" },
+      };
+      var chart = new google.visualization.ColumnChart(document.getElementById("columnchart_values"));
+      chart.draw(view, options);
+  }
+  </script>
+
+	<script type="text/javascript">
+
+		// Load the Visualization API and the corechart package.
+		google.charts.load('current', {'packages':['corechart']});
+
+		// Set a callback to run when the Google Visualization API is loaded.
+		google.charts.setOnLoadCallback(drawChart);
+
+		// Callback that creates and populates a data table,
+		// instantiates the pie chart, passes in the data and
+		// draws it.
+		function drawChart() {
+
+			// Create the data table.
+			var data = new google.visualization.DataTable();
+			data.addColumn('string', 'Réponses');
+			data.addColumn('number', 'Valeurs');
+			data.addRows([
+				{% for key, result in results %}
+					{% if loop.last %}
+						['{{key}}',{{result}}]
+					{% else %}
+						['{{key}}',{{result}}],
+					{% endif %}
+				{% endfor %}
+			]);
+
+			// Set chart options
+			var options = {'title':'Votre travail nécessite -t-il de répéter les mêmes actions plus de 2 à 4 fois par minute ?',
+										 'pieHole':0.4,
+										 'legend': 'none',
+        		 				 'pieSliceText': 'label',
+										 'width':500,
+										 'height':500,
+										 'slices': [{color: '#B9121B'}, {color: '#DBEA01'}, {color: 'orange'}, {color: 'green'}]
+									 };
+
+			// Instantiate and draw our chart, passing in some options.
+			var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+			chart.draw(data, options);
+		}
+	</script>
 {% endblock %}
 
 
 {% block body_bundle  %}
-<pre>
-	<table>
-	{{ tab | raw 	 }}
-	</table>
-</pre>
-  <a href="{{ path('chu_etude_show_etudes')}}" class="btn btn-default"> Retour à la liste des études.</a>
+	<ul>
+		{% for key, score in scores %}
+				<li>{{ key }}: {{ score }}</li>
+		{% endfor %}
+	</ul>
+	<div id="columnchart_values" style="width: 500px; height: 500px;"></div>
+	<div id="chart_div"></div>
+  <a href="{{ path('chu_etude_show_etudes')}}" class="btn btn-primary"> Retour à la liste des études</a>
 {% endblock %}

@@ -1,0 +1,28 @@
+chu_medecin_homepage:
+    path:     /
+    defaults: { _controller: CHUMedecinBundle:Default:index }
+creer_compte_medecin:
+    path:     /creer_compte
+    defaults: { _controller: CHUMedecinBundle:Default:creer_compte }
+
+
+ajouter_patient_medecin:
+    path:     /ajouter_patient
+    defaults: { _controller: CHUMedecinBundle:Default:ajouterPatient }
+afficher_etudes_medecin:
+    path:     /afficher_etudes
+    defaults: { _controller: CHUMedecinBundle:Default:afficherEtudes }
+afficher_patients_medecin:
+    path:     /afficher_patients
+    defaults: { _controller: CHUMedecinBundle:Default:afficherPatients }
+affecter_etude_medecin:
+    path:     /affecter_etude
+    defaults: { _controller: CHUMedecinBundle:Default:affecterEtude }
+
+
+
+
+
+
+
+

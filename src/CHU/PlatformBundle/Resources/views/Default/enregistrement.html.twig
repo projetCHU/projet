@@ -1,0 +1,72 @@
+<!DOCTYPE >
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Enregistrement</title>
+
+	
+	<link rel="stylesheet" type="text/css" href="{{asset('public/css/enregistrement.css')}}">
+    <link rel="stylesheet"  href="{{asset('public/css/bootstrap.min.css')}}">
+    
+    
+
+</head>
+
+    <body>
+        
+        <div id="signup-form">
+  
+   {% if code is defined %}
+            
+            <form  action= "{{ path('registration') }}" method="post">
+                
+                <input type="hidden" name="code" value="{{ code }}" required/>
+             {% if patient is defined and patient == true %}
+                <p>
+                    <label for="dateNaissance">Date de naissance</label>
+                    <input id="dateNaissance" type="text" name="dateNaissance"  required/>
+                </p>
+                               
+                <p>
+                    <label for="adressemail">Adresse email </label>
+                    <input id="adressemail" type="email" name="_email" required/>
+                </p>
+            {% endif %}
+            
+    
+
+                
+                
+                <p>
+                    <label for="motdepass">Mot de passe</label>
+                    <input id="motdepass" type="password" name="_password" required/>
+                </p>
+                
+                <p>
+                    <label for="Confimotdepass">Confirmer mot de passe</label>
+                    <input id="Confimotdepass" type="password" name="Confimotdepass" required/>
+                </p>
+                      
+                <p>
+     <button id="submit" type="submit">S'enregister</button> 
+                </p>               
+            </form>
+   {% else %}
+     <form  action= "{{ path('registration') }}" method="post">
+     <p>
+      <label for="code">Code</label>
+      <input id="code" type="text" name="code" required/>
+     </p>
+     <p>
+      <button id="submit" type="submit">Envoyer</button> 
+     </p>
+     </form>
+   {% endif %}
+       </div>
+
+    </body>
+    <script src="public/jquery/jquery.min.js"></script>
+    <script src="public/js/bootstrap.min.js"></script>
+    
+    
+</html>

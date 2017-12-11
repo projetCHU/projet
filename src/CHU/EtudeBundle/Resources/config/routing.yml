@@ -1,6 +1,6 @@
 #CURRENT VERSION
 
-chu__homepage:
+chu_homepage:
     path:     /
     defaults: { _controller: CHUEtudeBundle:Default:index}
 
@@ -20,10 +20,18 @@ chu_etude_show_etudes:
     path:     /list
     defaults: { _controller: CHUEtudeBundle:Default:showListForms }
 
-chu_etude_action_questionnaire:
-    path:     /show
-    defaults: { _controller: CHUEtudeBundle:Default:handleChoice}
-
 chu_etude_questionnaire_repondu:
     path:     /answers/submit
     defaults: { _controller: CHUEtudeBundle:Default:submitFormAnswered}
+
+chu_etude_delete_form:
+    path:     /delete
+    defaults: { _controller: CHUEtudeBundle:Default:deleteForm}
+
+chu_etude_answer_form:
+    path:     /answers
+    defaults: { _controller: CHUEtudeBundle:Default:answerForm}
+
+chu_etude_check_results_form:
+    path:     /results
+    defaults: { _controller: CHUEtudeBundle:Default:checkResults}

@@ -1,0 +1,19 @@
+{# /src/CHU/EtudeBundle/Resources/views/Default/message_page.html.twig #}
+
+{% extends "CHUEtudeBundle::layoutBundle.html.twig" %}
+
+
+{% block stylesheets %}
+  {{ parent() }}
+{% endblock %}
+
+{% block title %}
+{{titre_page}}
+{% endblock %}
+
+{% block body_bundle %}
+  <div id="message">
+    <h2>{{message}}</h2>
+  </div>
+  <a id="cancelButton" href="{{ path('chu_homepage')}}" class="btn btn-primary">Retour à l'accueil</a>
+{% endblock %}
