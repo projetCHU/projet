@@ -48,6 +48,11 @@ h1 {
   font-size: 14px;
 }
 
+#previewInfoText {
+  font-style: italic;
+  font-size: 14px;
+}
+
 #form_name {
   float:left;
   margin-right: 5%;
@@ -95,4 +100,11 @@ h1 {
 
 .DataConstraints {
   width : 70px;
+}
+
+/*LA zone de création du formbuilder*/
+#formBuildArea
+{
+  overflow: scroll;
+  height: 500px;
 }
