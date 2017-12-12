@@ -1,13 +1,18 @@
 {% extends 'CHUMedecinBundle:Default:index.html.twig'%}
  {% block stylesheets %}
     <link rel="stylesheet" href="{{asset('/public/css/creerCompte.css')}}">
+<link rel="stylesheet" href="{{asset('public/css/font-awesome.min.css')}}">
+<link rel="stylesheet"  href="{{asset('public/css/log.css')}}" />
+<script type="text/javascript"></script>
 {% endblock  %}
 
 {% block body %}
 
    <div class="container">
  {% if code is defined  %}
-  <div class="page-header">{{ code }}</div>
+       <br>
+        <h1>Numero d'anonymat generer</h1>
+  <pre class="page-header">{{ code }}</pre>
 
  {% else %}
   <div class="page-header"></div>

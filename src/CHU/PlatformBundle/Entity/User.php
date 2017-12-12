@@ -20,7 +20,10 @@ class User extends BaseUser
     protected $id;
     
    
-    
+    /**
+     * @ORM\ManyToMany(targetEntity="CHU\PlatformBundle\Entity\Salarie", mappedBy="users")
+     */
+    protected $patients;
     
     
     public function __construct()
@@ -29,4 +32,39 @@ class User extends BaseUser
         // your own logic
     }
 
+
+
+    /**
+     * Add patient
+     *
+     * @param \CHU\PlatformBundle\Entity\Salarie $patient
+     *
+     * @return User
+     */
+    public function addPatient(\CHU\PlatformBundle\Entity\Salarie $patient)
+    {
+        $this->patients[] = $patient;
+
+        return $this;
+    }
+
+    /**
+     * Remove patient
+     *
+     * @param \CHU\PlatformBundle\Entity\Salarie $patient
+     */
+    public function removePatient(\CHU\PlatformBundle\Entity\Salarie $patient)
+    {
+        $this->patients->removeElement($patient);
+    }
+
+    /**
+     * Get patients
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPatients()
+    {
+        return $this->patients;
+    }
 }

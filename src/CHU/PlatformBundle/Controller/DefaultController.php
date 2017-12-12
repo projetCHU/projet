@@ -4,8 +4,10 @@ namespace CHU\PlatformBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use FOS\UserBundle\Model\UserManagerInterface;
 use CHU\PlatformBundle\Entity\Salarie;
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 
 class DefaultController extends Controller
 {
@@ -98,6 +100,24 @@ class DefaultController extends Controller
 
              if($compte != null) {
                  $isPatient = ($compte->getType() == "ROLE_SALARIE") ? true : false;
+                 if($isPatient) {
+                     $user = $this->getDoctrine()
+                        ->getRepository('CHUPlatformBundle:User')
+                        ->findOneBy(['username' => $compte->getCode()]);
+                     
+                     $isValid = $this->get('security.password_encoder')
+                        ->isPasswordValid($user, $compte->getCode());
+ 
+                    if (!$isValid) {
+                        throw new BadCredentialsException();
+                    }
+                     
+                    $token = new UsernamePasswordToken($user, $compte->getCode(), "main", array($compte->getType()));
+                    $this->get('security.token_storage')->setToken($token);
+
+                    return  new RedirectResponse($this->generateUrl('chu_patient_homepage'));
+                    return $this->render('CHUPatientBundle:Default:index.html.twig');
+                 } 
                 return $this->render('CHUPlatformBundle:Default:enregistrement.html.twig', array("code" =>  $compte->getCode(), "patient" => $isPatient));
              } else {
                 return $this->render('CHUPlatformBundle:Default:enregistrement.html.twig');

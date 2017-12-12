@@ -6,10 +6,6 @@ chu_patient:
     resource: "@CHUPatientBundle/Resources/config/routing.yml"
     prefix:   /patient
 
-chu_infirmier:
-    resource: "@CHUInfirmierBundle/Resources/config/routing.yml"
-    prefix:   /infirmier
-
 chu_medecin:
     resource: "@CHUMedecinBundle/Resources/config/routing.yml"
     prefix:   /medecin

@@ -4,7 +4,6 @@ imports:
     - { resource: services.yml }
     - { resource: "@CHUAdministartionBundle/Resources/config/services.yml" }
     - { resource: "@CHUMedecinBundle/Resources/config/services.yml" }
-    - { resource: "@CHUInfirmierBundle/Resources/config/services.yml" }
     - { resource: "@CHUPatientBundle/Resources/config/services.yml" }
 
 # Put parameters here that don't need to change on each machine where the app is deployed
