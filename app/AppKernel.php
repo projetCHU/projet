@@ -20,7 +20,6 @@ class AppKernel extends Kernel
             new FOS\UserBundle\FOSUserBundle(),
             new CHU\AdministartionBundle\CHUAdministartionBundle(),
             new CHU\MedecinBundle\CHUMedecinBundle(),
-            new CHU\InfirmierBundle\CHUInfirmierBundle(),
             new CHU\PatientBundle\CHUPatientBundle(),
 	    new Doctrine\Bundle\MongoDBBundle\DoctrineMongoDBBundle()
         ];

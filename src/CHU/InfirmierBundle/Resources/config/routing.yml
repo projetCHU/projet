@@ -1,7 +1,0 @@
-chu_infirmier_homepage:
-    path:     /
-    defaults: { _controller: CHUInfirmierBundle:Default:index }
-    
-creer_compte_infirmier:
-    path:     /creer_compte
-    defaults: { _controller: CHUInfirmierBundle:Default:creerCompte }

@@ -1,6 +1,18 @@
 {% extends 'CHUAdministartionBundle:Default:index.html.twig'%}
 
+ {% block menu %}
+       <li><a href="{{path('afficher_etudes_medecin')}}"><span class="glyphicon glyphicon-lock"></span> afficher les études </a></li> 
+       <li><#><span class="glyphicon glyphicon-lock"></span> Afficher les patient  </li>
+      
+        <li><a href="#"><span class="glyphicon glyphicon-lock"></span> céerr une étude </a></li>
+        
+    {% endblock  %}
+
+
 {%block lien%} 
+{% if is_granted("ROLE") %}
+    Hi {{ app.user.email }}
+{% endif %}
 <li><a  href="{{path('creer_compte_medecin')}}">creer compte</a></li> 
 {% endblock %}
 
