@@ -14,5 +14,13 @@ afficher_etudes:
     path:     /afficher_etudes
     defaults: { _controller: CHUAdministartionBundle:Default:afficherEtudes }
     
+afficher_users_admin:
+    path:     /afficher_medecins
+    defaults: { _controller: CHUAdministartionBundle:Default:afficherMedecins }
+    
+supprimer_user:
+     path:     /supprimer_user
+     defaults: { _controller: CHUAdministartionBundle:Default:supprimerUser }
+
 
     

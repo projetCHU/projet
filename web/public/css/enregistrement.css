@@ -6,9 +6,6 @@
 */
 
 
-body { 
-	background-image:url(/public/img/bg-banner.jpg);  
-}
  input, textarea { 
 	font: 14px/24px Helvetica, Arial, sans-serif; 
 	color: #666; 

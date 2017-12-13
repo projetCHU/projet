@@ -1,1 +1,22 @@
 {% extends 'CHUMedecinBundle:Default:index.html.twig'%}
+{% block body %}
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<table class="table">
+  <tr>
+     <th>Numero d'anonymat du patient</th>
+  </tr>
+    {% for code in codes %}
+   <tr><td>{{code}}</td></tr>
+   {% endfor %}
+ 
+</table>
+
+{% endblock body %}

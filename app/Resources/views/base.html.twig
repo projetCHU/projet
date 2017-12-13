@@ -13,7 +13,7 @@
     </head>
 
     
-    <body>
+   
         
         <div class="row affix-row" >
     <div class="col-sm-3 col-md-2 affix-sidebar">
@@ -51,18 +51,11 @@
           <a href="#" data-toggle="collapse" data-target="#toggleDemo" data-parent="#sidenav01" class="collapsed">
           <span class="glyphicon glyphicon-user"></span> Connexion 
           </a>
-          <div class="collapse" id="toggleDemo" style="height: 0px;">
-            <ul class="nav nav-list">
-            
-                <li><a href="{{path('fos_user_security_login')}}">Se connecter</a></li>
-              <li><a href="{{path('registration')}}">connexion Salarie</a></li>
-           
-            </ul>
-          </div>
+        
         </li>
        
-        <li><a href="#"><span class="glyphicon glyphicon-lock"></span> Projet</a></li>
-        <li><a href="#"><span class="glyphicon glyphicon-envelope"></span> contact</a></li>
+        <li><a href="{{path('fos_user_security_login')}}">  <span class="glyphicon glyphicon-user"></span>Connexion User</a></li>
+        <li><a href="{{path('registration')}}"><span class="glyphicon glyphicon-user"></span>Connexion Salarie</a></li>
         {% endblock%}
       </ul>
       </div><!--/.nav-collapse -->
@@ -76,7 +69,13 @@
    
         
 {% block body %}
+        
 {% endblock body %}
+		<!--<div class="container">
+			
+				<div class="page-header">
+	<h3><span class="glyphicon glyphicon-th-list"></span> Navigation</h3>
+</div>-->
 
             
 		</div>
@@ -85,7 +84,22 @@
 <script src="/public/jquery/jquery.min.js"></script>
 <script src="/public/js/bootstrap.min.js"></script>
   
-</body>
+
    
+        
+	<!--footer-->
+	<footer id="footer">
+		
+						
+                        <div class="credits">
+                            <!-- 
+                               Designed by Université d'Angers 
+                            -->
+                           
+                            
+                 
+		</div>
+	</footer>
+	<!--/ footer-->
    
 </html>

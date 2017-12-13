@@ -95,15 +95,6 @@ class DefaultController extends Controller
         return $this->render('CHUMedecinBundle:Default:afficher_etudes.html.twig');
     }
     
-     public function afficherPatientsAction(Request $request)
-    {
-         if ($request->isMethod('GET')) {
-             $current_user = $this->getUser();
-             echo $current_user->getPatients()[0]->getId();
-             //return new Response(var_dump($current_user->getPatients()));
-             return $this->render('CHUMedecinBundle:Default:afficher_patients.html.twig', array("patients"=>$current_user->getPatients()));
-         } 
-    }
     
      public function affecterEtudeAction()
     {
@@ -111,8 +102,21 @@ class DefaultController extends Controller
     }
     
     
+    public function afficherPatientsAction(Request $request)
+   {
+        if ($request->isMethod('GET')) {
+            $current_user = $this->getUser();
+            $patients=$current_user->getPatients();
+            $codes=array();
+            foreach($patients as $patient){
+                $codes[]=$patient->getCompte()->getCode();
+            }
+           // echo $current_user->getPatients()[0]->getId();
+            //return new Response(var_dump($current_user->getPatients()));
+            return $this->render('CHUMedecinBundle:Default:afficher_patients.html.twig', array("codes"=>$codes));
+         
+                                 }
     
-    
-    
+    }
     
 }

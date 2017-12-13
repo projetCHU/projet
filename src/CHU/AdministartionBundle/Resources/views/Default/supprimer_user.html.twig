@@ -1,0 +1,30 @@
+{% extends 'CHUAdministartionBundle:Default:index.html.twig'%}
+{% block stylesheets %} 
+
+	<link rel="stylesheet" href="{{asset('public/css/font-awesome.min.css')}}">
+<link rel="stylesheet"  href="{{asset('public/css/log.css')}}" />
+<script type="text/javascript"></script>
+ {% endblock stylesheets %}
+{% block body %}
+ <div class="col-sm-9 col-md-10 affix-content">
+<div class="container">
+	<section id="content">
+        <h1>Supprimer un utilisateur</h1>
+  <form  action= "#" method="post">
+
+      
+      
+     <div class="wrapper">
+         
+<input id="codePatient" type="text" name="codePatient" required/>
+      </div>
+<button id="submit" type="submit">Supprimer</button> 
+      
+</form>
+    </section>
+</div>
+{% endblock body %}
+
+
+
+

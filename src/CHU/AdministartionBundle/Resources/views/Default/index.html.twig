@@ -21,14 +21,17 @@
             
                 <li><a href="{{path('fos_user_security_logout')}}">Se deconnecter</a></li>
          {%block lien %}     
-                <li><a  href="{{path('creer_compte')}}">creer compte</a></li> 
+               
            {%endblock%}
             </ul>
           </div>
         </li>
       {% block menu %}
 
-        <li><a href="#"><span class="glyphicon glyphicon-lock"></span> céerr une étude </a></li>
-        <li><a href="{{path('afficher_etudes')}}"><span class="glyphicon glyphicon-lock"></span> afficher les études </a></li>
+         <li><a  href="{{path('creer_compte')}}"> <span class="glyphicon glyphicon-plus-sign"></span> Ajouter un utilisateur</a></li> 
+        <li><a href="{{path('afficher_users_admin')}}"><span class="glyphicon  glyphicon-menu-hamburger"></span> Afficher les utilisateurs </a></li>
+        <li><a href="{{path('supprimer_user')}}"><span class="glyphicon glyphicon-plus-sign"></span> Supprimer un utilisateur </a></li>
+        <li><a href="#"><span class="glyphicon glyphicon-plus-sign"></span> Ajouter une étude </a></li>
+    <li><a href="#"><span class="glyphicon  glyphicon-plus-sign"></span> Ajouter un questionnaire </a></li>
     {% endblock  %}
     {% endblock%}
